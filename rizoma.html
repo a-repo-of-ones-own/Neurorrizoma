@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>D3 Rhizome Graph</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #faf8fc;
+    }
+
+    svg {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: grab;
+    }
+
+    svg:active {
+      cursor: grabbing;
+    }
+
+    .link {
+      fill: none;
+      stroke: #9c8ca8;
+      stroke-opacity: 0.45;
+      stroke-width: 2px;
+    }
+
+    .node circle {
+      stroke: white;
+      stroke-width: 2px;
+      cursor: pointer;
+    }
+
+    .node text {
+      font-size: 12px;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #faf8fc;
+      stroke-width: 4px;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+
+<body>
+  <svg id="rhizome"></svg>
+
+  <script type="module">
+    import * as d3 from
+      "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+
+    const nodes = [
+      { id: "Autofiction", group: "literature", size: 22 },
+      { id: "Identity", group: "concept", size: 20 },
+      { id: "Memory", group: "concept", size: 17 },
+      { id: "Body", group: "concept", size: 16 },
+      { id: "Archive", group: "method", size: 18 },
+      { id: "Gender", group: "concept", size: 18 },
+      { id: "Authorship", group: "literature", size: 19 },
+      { id: "Work", group: "history", size: 16 },
+      { id: "Technology", group: "method", size: 15 },
+      { id: "Narrative", group: "literature", size: 20 },
+      { id: "Subjectivity", group: "concept", size: 21 },
+      { id: "History", group: "history", size: 17 },
+      { id: "Digital Humanities", group: "method", size: 19 }
+    ];
+
+    const links = [
+      { source: "Autofiction", target: "Identity" },
+      { source: "Autofiction", target: "Memory" },
+      { source: "Autofiction", target: "Authorship" },
+      { source: "Autofiction", target: "Narrative" },
+
+      { source: "Identity", target: "Gender" },
+      { source: "Identity", target: "Body" },
+      { source: "Identity", target: "Subjectivity" },
+
+      { source: "Memory", target: "Archive" },
+      { source: "Memory", target: "History" },
+      { source: "Memory", target: "Body" },
+
+      { source: "Archive", target: "Digital Humanities" },
+      { source: "Archive", target: "History" },
+      { source: "Archive", target: "Authorship" },
+
+      { source: "Technology", target: "Digital Humanities" },
+      { source: "Technology", target: "Work" },
+      { source: "Technology", target: "Authorship" },
+
+      { source: "Work", target: "Gender" },
+      { source: "Work", target: "History" },
+
+      { source: "Narrative", target: "Subjectivity" },
+      { source: "Narrative", target: "History" },
+
+      // Cross-connections make it more rhizomatic
+      { source: "Body", target: "Archive" },
+      { source: "Gender", target: "Narrative" },
+      { source: "Digital Humanities", target: "Memory" },
+      { source: "Subjectivity", target: "Authorship" }
+    ];
+
+    const svg = d3.select("#rhizome");
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    svg.attr("viewBox", [0, 0, width, height]);
+
+    // Everything goes inside this group so it can be zoomed.
+    const container = svg.append("g");
+
+    svg.call(
+      d3.zoom()
+        .scaleExtent([0.3, 4])
+        .on("zoom", event => {
+          container.attr("transform", event.transform);
+        })
+    );
+
+    const color = d3.scaleOrdinal()
+      .domain(["literature", "concept", "method", "history"])
+      .range(["#704c8c", "#ad6e9c", "#668d8a", "#b48257"]);
+
+    // Curved connections
+    const link = container.append("g")
+      .selectAll("path")
+      .data(links)
+      .join("path")
+      .attr("class", "link");
+
+    const node = container.append("g")
+      .selectAll("g")
+      .data(nodes)
+      .join("g")
+      .attr("class", "node")
+      .call(
+        d3.drag()
+          .on("start", dragStarted)
+          .on("drag", dragged)
+          .on("end", dragEnded)
+      );
+
+    node.append("circle")
+      .attr("r", d => d.size)
+      .attr("fill", d => color(d.group));
+
+    node.append("text")
+      .attr("x", d => d.size + 7)
+      .attr("y", 4)
+      .text(d => d.id);
+
+    node.append("title")
+      .text(d => `${d.id}\nCategory: ${d.group}`);
+
+    const simulation = d3.forceSimulation(nodes)
+      .force(
+        "link",
+        d3.forceLink(links)
+          .id(d => d.id)
+          .distance(d => 90 + Math.random() * 50)
+          .strength(0.35)
+      )
+      .force(
+        "charge",
+        d3.forceManyBody()
+          .strength(-350)
+      )
+      .force(
+        "collision",
+        d3.forceCollide()
+          .radius(d => d.size + 18)
+      )
+      .force(
+        "center",
+        d3.forceCenter(width / 2, height / 2)
+      )
+      .force(
+        "x",
+        d3.forceX(width / 2).strength(0.025)
+      )
+      .force(
+        "y",
+        d3.forceY(height / 2).strength(0.025)
+      )
+      .on("tick", ticked);
+
+    function ticked() {
+      // Curved paths instead of straight lines
+      link.attr("d", d => {
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        return `
+          M ${d.source.x},${d.source.y}
+          A ${distance},${distance}
+          0 0,1
+          ${d.target.x},${d.target.y}
+        `;
+      });
+
+      node.attr(
+        "transform",
+        d => `translate(${d.x}, ${d.y})`
+      );
+    }
+
+    function dragStarted(event, d) {
+      if (!event.active) {
+        simulation.alphaTarget(0.3).restart();
+      }
+
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragEnded(event, d) {
+      if (!event.active) {
+        simulation.alphaTarget(0);
+      }
+
+      // Release the node after dragging.
+      d.fx = null;
+      d.fy = null;
+    }
+  </script>
+</body>
+</html>
