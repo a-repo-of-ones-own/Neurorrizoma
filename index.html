@@ -55,56 +55,66 @@
     import * as d3 from
       "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-    const nodes = [
-      { id: "Autofiction", group: "literature", size: 22 },
-      { id: "Identity", group: "concept", size: 20 },
-      { id: "Memory", group: "concept", size: 17 },
-      { id: "Body", group: "concept", size: 16 },
-      { id: "Archive", group: "method", size: 18 },
-      { id: "Gender", group: "concept", size: 18 },
-      { id: "Authorship", group: "literature", size: 19 },
-      { id: "Work", group: "history", size: 16 },
-      { id: "Technology", group: "method", size: 15 },
-      { id: "Narrative", group: "literature", size: 20 },
-      { id: "Subjectivity", group: "concept", size: 21 },
-      { id: "History", group: "history", size: 17 },
-      { id: "Digital Humanities", group: "method", size: 19 }
-    ];
+const nodes = [
+  { id: "Autofiction", group: "literature", size: 22 },
+  { id: "Identity", group: "concept", size: 20 },
+  { id: "Memory", group: "concept", size: 17 },
+  { id: "Body", group: "concept", size: 16 },
+  { id: "Archive", group: "method", size: 18 },
+  { id: "Gender", group: "concept", size: 18 },
+  { id: "Authorship", group: "literature", size: 19 },
+  { id: "Technology", group: "method", size: 15 },
+  { id: "Narrative", group: "literature", size: 20 },
+  { id: "Subjectivity", group: "concept", size: 21 },
+  { id: "History", group: "history", size: 17 },
+  { id: "Digital Humanities", group: "method", size: 19 },
+  { id: "Autism", group: "neurodivergence", size: 18 },
+  { id: "ADHD", group: "neurodivergence", size: 18 }
+];
 
-    const links = [
-      { source: "Autofiction", target: "Identity" },
-      { source: "Autofiction", target: "Memory" },
-      { source: "Autofiction", target: "Authorship" },
-      { source: "Autofiction", target: "Narrative" },
+const links = [
+  { source: "Autofiction", target: "Identity" },
+  { source: "Autofiction", target: "Memory" },
+  { source: "Autofiction", target: "Authorship" },
+  { source: "Autofiction", target: "Narrative" },
 
-      { source: "Identity", target: "Gender" },
-      { source: "Identity", target: "Body" },
-      { source: "Identity", target: "Subjectivity" },
+  { source: "Identity", target: "Gender" },
+  { source: "Identity", target: "Body" },
+  { source: "Identity", target: "Subjectivity" },
+  { source: "Identity", target: "Autism" },
+  { source: "Identity", target: "ADHD" },
 
-      { source: "Memory", target: "Archive" },
-      { source: "Memory", target: "History" },
-      { source: "Memory", target: "Body" },
+  { source: "Memory", target: "Archive" },
+  { source: "Memory", target: "History" },
+  { source: "Memory", target: "Body" },
+  { source: "Memory", target: "Autism" },
 
-      { source: "Archive", target: "Digital Humanities" },
-      { source: "Archive", target: "History" },
-      { source: "Archive", target: "Authorship" },
+  { source: "Archive", target: "Digital Humanities" },
+  { source: "Archive", target: "History" },
+  { source: "Archive", target: "Authorship" },
 
-      { source: "Technology", target: "Digital Humanities" },
-      { source: "Technology", target: "Work" },
-      { source: "Technology", target: "Authorship" },
+  { source: "Technology", target: "Digital Humanities" },
+  { source: "Technology", target: "Authorship" },
+  { source: "Technology", target: "ADHD" },
 
-      { source: "Work", target: "Gender" },
-      { source: "Work", target: "History" },
+  { source: "Narrative", target: "Subjectivity" },
+  { source: "Narrative", target: "History" },
+  { source: "Narrative", target: "Autism" },
+  { source: "Narrative", target: "ADHD" },
 
-      { source: "Narrative", target: "Subjectivity" },
-      { source: "Narrative", target: "History" },
+  { source: "Subjectivity", target: "Authorship" },
+  { source: "Subjectivity", target: "Autism" },
+  { source: "Subjectivity", target: "ADHD" },
 
-      // Cross-connections make it more rhizomatic
-      { source: "Body", target: "Archive" },
-      { source: "Gender", target: "Narrative" },
-      { source: "Digital Humanities", target: "Memory" },
-      { source: "Subjectivity", target: "Authorship" }
-    ];
+  { source: "Autism", target: "ADHD" },
+  { source: "Autism", target: "Body" },
+  { source: "ADHD", target: "Memory" },
+
+  // Cross-connections
+  { source: "Body", target: "Archive" },
+  { source: "Gender", target: "Narrative" },
+  { source: "Digital Humanities", target: "Memory" }
+];
 
     const svg = d3.select("#rhizome");
 
