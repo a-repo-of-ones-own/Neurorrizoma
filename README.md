@@ -1,0 +1,2 @@
+# Neurorrizoma
+Espigamiento neurodivergente
