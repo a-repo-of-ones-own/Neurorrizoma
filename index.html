@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Image Rhizome Graph</title>
+  <title>Image-Only Rhizome Graph</title>
 
   <style>
     body {
@@ -48,12 +48,7 @@
     .link {
       fill: none;
       stroke: #9c8ca8;
-      stroke-opacity: 0.42;
-      stroke-width: 2px;
-    }
-
-    .image-link {
-      stroke-opacity: 0.28;
+      stroke-opacity: 0.30;
       stroke-width: 1.5px;
     }
 
@@ -62,8 +57,9 @@
     }
 
     .node-base {
-      stroke: white;
-      stroke-width: 2px;
+      fill: #ffffff;
+      stroke: #ffffff;
+      stroke-width: 3px;
     }
 
     .thumbnail {
@@ -72,14 +68,16 @@
 
     .thumbnail-border {
       fill: none;
-      stroke: white;
+      stroke: #ffffff;
       stroke-width: 3px;
       pointer-events: none;
     }
 
     .node text {
+      opacity: 0;
       font-size: 12px;
       pointer-events: none;
+      transition: opacity 0.15s ease;
 
       paint-order: stroke;
       stroke: #faf8fc;
@@ -87,13 +85,7 @@
       stroke-linejoin: round;
     }
 
-    /* Hide image filenames until hover */
-    .image-node text {
-      opacity: 0;
-      transition: opacity 0.15s ease;
-    }
-
-    .image-node:hover text {
+    .node:hover text {
       opacity: 1;
     }
   </style>
@@ -115,8 +107,6 @@
     /*
     =====================================================
     GITHUB SETTINGS
-
-    CHANGE THESE TWO VALUES
     =====================================================
     */
 
@@ -124,10 +114,9 @@
     const GITHUB_REPO = "Neurorrizoma";
 
     /*
-    Leave this empty to use the repository's
-    default branch.
+    Leave this empty to use the repository's default branch.
 
-    Otherwise, write something such as:
+    Otherwise, write:
     const GITHUB_BRANCH = "main";
     */
     const GITHUB_BRANCH = "";
@@ -137,244 +126,12 @@
 
     /*
     =====================================================
-    TOPIC NODES
+    IMAGE-ONLY GRAPH DATA
     =====================================================
     */
 
-    const nodes = [
-      {
-        id: "Autofiction",
-        group: "literature",
-        size: 22
-      },
-      {
-        id: "Identity",
-        group: "concept",
-        size: 20
-      },
-      {
-        id: "Memory",
-        group: "concept",
-        size: 17
-      },
-      {
-        id: "Body",
-        group: "concept",
-        size: 16
-      },
-      {
-        id: "Archive",
-        group: "method",
-        size: 18
-      },
-      {
-        id: "Gender",
-        group: "concept",
-        size: 18
-      },
-      {
-        id: "Authorship",
-        group: "literature",
-        size: 19
-      },
-      {
-        id: "Technology",
-        group: "method",
-        size: 15
-      },
-      {
-        id: "Narrative",
-        group: "literature",
-        size: 20
-      },
-      {
-        id: "Subjectivity",
-        group: "concept",
-        size: 21
-      },
-      {
-        id: "History",
-        group: "history",
-        size: 17
-      },
-      {
-        id: "Digital Humanities",
-        group: "method",
-        size: 19
-      },
-      {
-        id: "Autism",
-        group: "neurodivergence",
-        size: 18
-      },
-      {
-        id: "ADHD",
-        group: "neurodivergence",
-        size: 18
-      }
-    ];
-
-
-    /*
-    =====================================================
-    CONNECTIONS BETWEEN TOPICS
-    =====================================================
-    */
-
-    const links = [
-      {
-        source: "Autofiction",
-        target: "Identity"
-      },
-      {
-        source: "Autofiction",
-        target: "Memory"
-      },
-      {
-        source: "Autofiction",
-        target: "Authorship"
-      },
-      {
-        source: "Autofiction",
-        target: "Narrative"
-      },
-
-      {
-        source: "Identity",
-        target: "Gender"
-      },
-      {
-        source: "Identity",
-        target: "Body"
-      },
-      {
-        source: "Identity",
-        target: "Subjectivity"
-      },
-      {
-        source: "Identity",
-        target: "Autism"
-      },
-      {
-        source: "Identity",
-        target: "ADHD"
-      },
-
-      {
-        source: "Memory",
-        target: "Archive"
-      },
-      {
-        source: "Memory",
-        target: "History"
-      },
-      {
-        source: "Memory",
-        target: "Body"
-      },
-      {
-        source: "Memory",
-        target: "Autism"
-      },
-
-      {
-        source: "Archive",
-        target: "Digital Humanities"
-      },
-      {
-        source: "Archive",
-        target: "History"
-      },
-      {
-        source: "Archive",
-        target: "Authorship"
-      },
-
-      {
-        source: "Technology",
-        target: "Digital Humanities"
-      },
-      {
-        source: "Technology",
-        target: "Authorship"
-      },
-      {
-        source: "Technology",
-        target: "ADHD"
-      },
-
-      {
-        source: "Narrative",
-        target: "Subjectivity"
-      },
-      {
-        source: "Narrative",
-        target: "History"
-      },
-      {
-        source: "Narrative",
-        target: "Autism"
-      },
-      {
-        source: "Narrative",
-        target: "ADHD"
-      },
-
-      {
-        source: "Subjectivity",
-        target: "Authorship"
-      },
-      {
-        source: "Subjectivity",
-        target: "Autism"
-      },
-      {
-        source: "Subjectivity",
-        target: "ADHD"
-      },
-
-      {
-        source: "Autism",
-        target: "ADHD"
-      },
-      {
-        source: "Autism",
-        target: "Body"
-      },
-      {
-        source: "ADHD",
-        target: "Memory"
-      },
-
-      {
-        source: "Body",
-        target: "Archive"
-      },
-      {
-        source: "Gender",
-        target: "Narrative"
-      },
-      {
-        source: "Digital Humanities",
-        target: "Memory"
-      }
-    ];
-
-
-    /*
-    =====================================================
-    PREPARE TOPIC DATA
-    =====================================================
-    */
-
-    nodes.forEach(node => {
-      node.uid = node.id;
-      node.type = "topic";
-    });
-
-    links.forEach(link => {
-      link.kind = "topic";
-    });
+    const nodes = [];
+    const links = [];
 
 
     /*
@@ -391,7 +148,6 @@
     svg.attr("viewBox", [0, 0, width, height]);
 
     const defs = svg.append("defs");
-
     const container = svg.append("g");
 
     const linkLayer = container
@@ -419,29 +175,6 @@
           );
         })
     );
-
-
-    /*
-    =====================================================
-    COLORS
-    =====================================================
-    */
-
-    const color = d3.scaleOrdinal()
-      .domain([
-        "literature",
-        "concept",
-        "method",
-        "history",
-        "neurodivergence"
-      ])
-      .range([
-        "#704c8c",
-        "#ad6e9c",
-        "#668d8a",
-        "#b48257",
-        "#704c8c"
-      ]);
 
 
     /*
@@ -481,32 +214,20 @@
         "link",
         d3.forceLink(links)
           .id(node => node.uid)
-          .distance(link => {
-            return link.kind === "image"
-              ? 105
-              : 120;
-          })
-          .strength(link => {
-            return link.kind === "image"
-              ? 0.18
-              : 0.35;
-          })
+          .distance(115)
+          .strength(0.20)
       )
 
       .force(
         "charge",
         d3.forceManyBody()
-          .strength(node => {
-            return node.type === "image"
-              ? -180
-              : -350;
-          })
+          .strength(-220)
       )
 
       .force(
         "collision",
         d3.forceCollide()
-          .radius(node => node.size + 20)
+          .radius(node => node.size + 16)
           .strength(0.9)
       )
 
@@ -540,10 +261,6 @@
     */
 
     function renderGraph() {
-      const imageNodes = nodes.filter(node => {
-        return node.type === "image";
-      });
-
 
       /*
       Circular clipping paths for thumbnails
@@ -552,7 +269,7 @@
       const clips = defs
         .selectAll("clipPath.image-clip")
         .data(
-          imageNodes,
+          nodes,
           node => node.uid
         )
         .join(
@@ -590,7 +307,7 @@
 
 
       /*
-      Links
+      Image-to-image links
       */
 
       linkSelection = linkLayer
@@ -600,15 +317,11 @@
           linkKey
         )
         .join("path")
-        .attr("class", link => {
-          return link.kind === "image"
-            ? "link image-link"
-            : "link";
-        });
+        .attr("class", "link");
 
 
       /*
-      Nodes
+      Image nodes
       */
 
       nodeSelection = nodeLayer
@@ -622,9 +335,7 @@
           enter => {
             const group = enter
               .append("g")
-              .attr("class", node => {
-                return `node ${node.type}-node`;
-              })
+              .attr("class", "node")
               .call(dragBehavior);
 
             group
@@ -632,9 +343,6 @@
               .attr("class", "node-base");
 
             group
-              .filter(node => {
-                return node.type === "image";
-              })
               .append("image")
               .attr("class", "thumbnail")
               .attr(
@@ -643,9 +351,6 @@
               );
 
             group
-              .filter(node => {
-                return node.type === "image";
-              })
               .append("circle")
               .attr(
                 "class",
@@ -664,14 +369,8 @@
         );
 
 
-      nodeSelection
-        .attr("class", node => {
-          return `node ${node.type}-node`;
-        });
-
-
       /*
-      Node circles
+      Base circles
       */
 
       nodeSelection
@@ -679,14 +378,7 @@
         .attr(
           "r",
           node => node.size
-        )
-        .attr("fill", node => {
-          if (node.type === "image") {
-            return "#ffffff";
-          }
-
-          return color(node.group);
-        });
+        );
 
 
       /*
@@ -753,12 +445,17 @@
 
       nodeSelection
         .select("title")
-        .text(node => {
-          if (node.type === "image") {
-            return node.filename || node.id;
-          }
+        .text(node => node.filename || node.id);
 
-          return `${node.id}\nCategory: ${node.group}`;
+
+      /*
+      Open the original image when clicked
+      */
+
+      nodeSelection
+        .on("click", (event, node) => {
+          event.stopPropagation();
+          window.open(node.imageUrl, "_blank");
         });
 
 
@@ -785,15 +482,6 @@
         document.querySelector("#status");
 
       try {
-        if (
-          GITHUB_USER === "YOUR_GITHUB_USERNAME" ||
-          GITHUB_REPO === "YOUR_REPOSITORY_NAME"
-        ) {
-          throw new Error(
-            "Enter your GitHub username and repository name near the top of the code."
-          );
-        }
-
         const encodedFolder = IMAGES_FOLDER
           .split("/")
           .map(part => encodeURIComponent(part))
@@ -852,19 +540,9 @@
           return;
         }
 
-        const archiveNode = nodes.find(node => {
-          return node.uid === "Archive";
-        });
-
-        const centerX =
-          archiveNode?.x ?? width / 2;
-
-        const centerY =
-          archiveNode?.y ?? height / 2;
-
 
         /*
-        Create one graph node for each GitHub image
+        Create one graph node for every image
         */
 
         imageFiles.forEach((file, index) => {
@@ -874,7 +552,7 @@
             index * 2.399963;
 
           const initialRadius =
-            70 + Math.sqrt(index) * 38;
+            40 + Math.sqrt(index) * 48;
 
           nodes.push({
             uid: uid,
@@ -883,42 +561,45 @@
 
             filename: file.name,
 
-            type: "image",
-
-            group: "image",
-
-            /*
-            Increase this value to make
-            the thumbnails larger.
-            */
-            size: 34,
+            size: 38,
 
             imageUrl: file.download_url,
 
             x:
-              centerX +
+              width / 2 +
               Math.cos(angle) *
               initialRadius,
 
             y:
-              centerY +
+              height / 2 +
               Math.sin(angle) *
               initialRadius
           });
+        });
 
 
-          /*
-          Every image connects to Archive.
+        /*
+        Connect images only to other images.
 
-          Change "Archive" to "Autofiction",
-          "Memory", "Digital Humanities", etc.
-          */
+        Each image connects to the previous image.
+        Some images also receive a second connection,
+        making the layout look more rhizomatic.
+        */
 
-          links.push({
-            source: "Archive",
-            target: uid,
-            kind: "image"
-          });
+        nodes.forEach((node, index) => {
+          if (index > 0) {
+            links.push({
+              source: nodes[index - 1].uid,
+              target: node.uid
+            });
+          }
+
+          if (index > 3) {
+            links.push({
+              source: nodes[index - 3].uid,
+              target: node.uid
+            });
+          }
         });
 
         status.textContent =
@@ -954,7 +635,7 @@
           ? link.target.uid
           : link.target;
 
-      return `${source}-${target}-${link.kind}`;
+      return `${source}-${target}`;
     }
 
 
@@ -1094,7 +775,6 @@
     =====================================================
     */
 
-    renderGraph();
     loadImagesFromGitHub();
 
   </script>
