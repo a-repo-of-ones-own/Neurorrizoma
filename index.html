@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>D3 Rhizome Graph</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Image Rhizome Graph</title>
 
   <style>
     body {
       margin: 0;
+      overflow: hidden;
       font-family: Arial, sans-serif;
       background: #faf8fc;
     }
@@ -24,227 +29,1074 @@
       cursor: grabbing;
     }
 
+    #status {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+
+      padding: 9px 13px;
+      border-radius: 8px;
+
+      color: #514959;
+      background: rgba(250, 248, 252, 0.94);
+      box-shadow: 0 2px 10px rgba(70, 50, 80, 0.14);
+
+      font-size: 13px;
+    }
+
     .link {
       fill: none;
       stroke: #9c8ca8;
-      stroke-opacity: 0.45;
+      stroke-opacity: 0.42;
       stroke-width: 2px;
     }
 
-    .node circle {
+    .image-link {
+      stroke-opacity: 0.28;
+      stroke-width: 1.5px;
+    }
+
+    .node {
+      cursor: pointer;
+    }
+
+    .node-base {
       stroke: white;
       stroke-width: 2px;
-      cursor: pointer;
+    }
+
+    .thumbnail {
+      pointer-events: none;
+    }
+
+    .thumbnail-border {
+      fill: none;
+      stroke: white;
+      stroke-width: 3px;
+      pointer-events: none;
     }
 
     .node text {
       font-size: 12px;
       pointer-events: none;
+
       paint-order: stroke;
       stroke: #faf8fc;
-      stroke-width: 4px;
+      stroke-width: 5px;
       stroke-linejoin: round;
+    }
+
+    /* Hide image filenames until hover */
+    .image-node text {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .image-node:hover text {
+      opacity: 1;
     }
   </style>
 </head>
 
 <body>
+
+  <div id="status">
+    Loading images...
+  </div>
+
   <svg id="rhizome"></svg>
 
   <script type="module">
     import * as d3 from
       "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-const nodes = [
-  { id: "Autofiction", group: "literature", size: 22 },
-  { id: "Identity", group: "concept", size: 20 },
-  { id: "Memory", group: "concept", size: 17 },
-  { id: "Body", group: "concept", size: 16 },
-  { id: "Archive", group: "method", size: 18 },
-  { id: "Gender", group: "concept", size: 18 },
-  { id: "Authorship", group: "literature", size: 19 },
-  { id: "Technology", group: "method", size: 15 },
-  { id: "Narrative", group: "literature", size: 20 },
-  { id: "Subjectivity", group: "concept", size: 21 },
-  { id: "History", group: "history", size: 17 },
-  { id: "Digital Humanities", group: "method", size: 19 },
-  { id: "Autism", group: "neurodivergence", size: 18 },
-  { id: "ADHD", group: "neurodivergence", size: 18 }
-];
 
-const links = [
-  { source: "Autofiction", target: "Identity" },
-  { source: "Autofiction", target: "Memory" },
-  { source: "Autofiction", target: "Authorship" },
-  { source: "Autofiction", target: "Narrative" },
+    /*
+    =====================================================
+    GITHUB SETTINGS
 
-  { source: "Identity", target: "Gender" },
-  { source: "Identity", target: "Body" },
-  { source: "Identity", target: "Subjectivity" },
-  { source: "Identity", target: "Autism" },
-  { source: "Identity", target: "ADHD" },
+    CHANGE THESE TWO VALUES
+    =====================================================
+    */
 
-  { source: "Memory", target: "Archive" },
-  { source: "Memory", target: "History" },
-  { source: "Memory", target: "Body" },
-  { source: "Memory", target: "Autism" },
+    const GITHUB_USER = "YOUR_GITHUB_USERNAME";
+    const GITHUB_REPO = "YOUR_REPOSITORY_NAME";
 
-  { source: "Archive", target: "Digital Humanities" },
-  { source: "Archive", target: "History" },
-  { source: "Archive", target: "Authorship" },
+    /*
+    Leave this empty to use the repository's
+    default branch.
 
-  { source: "Technology", target: "Digital Humanities" },
-  { source: "Technology", target: "Authorship" },
-  { source: "Technology", target: "ADHD" },
+    Otherwise, write something such as:
+    const GITHUB_BRANCH = "main";
+    */
+    const GITHUB_BRANCH = "";
 
-  { source: "Narrative", target: "Subjectivity" },
-  { source: "Narrative", target: "History" },
-  { source: "Narrative", target: "Autism" },
-  { source: "Narrative", target: "ADHD" },
+    const IMAGES_FOLDER = "images";
 
-  { source: "Subjectivity", target: "Authorship" },
-  { source: "Subjectivity", target: "Autism" },
-  { source: "Subjectivity", target: "ADHD" },
 
-  { source: "Autism", target: "ADHD" },
-  { source: "Autism", target: "Body" },
-  { source: "ADHD", target: "Memory" },
+    /*
+    =====================================================
+    TOPIC NODES
+    =====================================================
+    */
 
-  // Cross-connections
-  { source: "Body", target: "Archive" },
-  { source: "Gender", target: "Narrative" },
-  { source: "Digital Humanities", target: "Memory" }
-];
+    const nodes = [
+      {
+        id: "Autofiction",
+        group: "literature",
+        size: 22
+      },
+      {
+        id: "Identity",
+        group: "concept",
+        size: 20
+      },
+      {
+        id: "Memory",
+        group: "concept",
+        size: 17
+      },
+      {
+        id: "Body",
+        group: "concept",
+        size: 16
+      },
+      {
+        id: "Archive",
+        group: "method",
+        size: 18
+      },
+      {
+        id: "Gender",
+        group: "concept",
+        size: 18
+      },
+      {
+        id: "Authorship",
+        group: "literature",
+        size: 19
+      },
+      {
+        id: "Technology",
+        group: "method",
+        size: 15
+      },
+      {
+        id: "Narrative",
+        group: "literature",
+        size: 20
+      },
+      {
+        id: "Subjectivity",
+        group: "concept",
+        size: 21
+      },
+      {
+        id: "History",
+        group: "history",
+        size: 17
+      },
+      {
+        id: "Digital Humanities",
+        group: "method",
+        size: 19
+      },
+      {
+        id: "Autism",
+        group: "neurodivergence",
+        size: 18
+      },
+      {
+        id: "ADHD",
+        group: "neurodivergence",
+        size: 18
+      }
+    ];
+
+
+    /*
+    =====================================================
+    CONNECTIONS BETWEEN TOPICS
+    =====================================================
+    */
+
+    const links = [
+      {
+        source: "Autofiction",
+        target: "Identity"
+      },
+      {
+        source: "Autofiction",
+        target: "Memory"
+      },
+      {
+        source: "Autofiction",
+        target: "Authorship"
+      },
+      {
+        source: "Autofiction",
+        target: "Narrative"
+      },
+
+      {
+        source: "Identity",
+        target: "Gender"
+      },
+      {
+        source: "Identity",
+        target: "Body"
+      },
+      {
+        source: "Identity",
+        target: "Subjectivity"
+      },
+      {
+        source: "Identity",
+        target: "Autism"
+      },
+      {
+        source: "Identity",
+        target: "ADHD"
+      },
+
+      {
+        source: "Memory",
+        target: "Archive"
+      },
+      {
+        source: "Memory",
+        target: "History"
+      },
+      {
+        source: "Memory",
+        target: "Body"
+      },
+      {
+        source: "Memory",
+        target: "Autism"
+      },
+
+      {
+        source: "Archive",
+        target: "Digital Humanities"
+      },
+      {
+        source: "Archive",
+        target: "History"
+      },
+      {
+        source: "Archive",
+        target: "Authorship"
+      },
+
+      {
+        source: "Technology",
+        target: "Digital Humanities"
+      },
+      {
+        source: "Technology",
+        target: "Authorship"
+      },
+      {
+        source: "Technology",
+        target: "ADHD"
+      },
+
+      {
+        source: "Narrative",
+        target: "Subjectivity"
+      },
+      {
+        source: "Narrative",
+        target: "History"
+      },
+      {
+        source: "Narrative",
+        target: "Autism"
+      },
+      {
+        source: "Narrative",
+        target: "ADHD"
+      },
+
+      {
+        source: "Subjectivity",
+        target: "Authorship"
+      },
+      {
+        source: "Subjectivity",
+        target: "Autism"
+      },
+      {
+        source: "Subjectivity",
+        target: "ADHD"
+      },
+
+      {
+        source: "Autism",
+        target: "ADHD"
+      },
+      {
+        source: "Autism",
+        target: "Body"
+      },
+      {
+        source: "ADHD",
+        target: "Memory"
+      },
+
+      {
+        source: "Body",
+        target: "Archive"
+      },
+      {
+        source: "Gender",
+        target: "Narrative"
+      },
+      {
+        source: "Digital Humanities",
+        target: "Memory"
+      }
+    ];
+
+
+    /*
+    =====================================================
+    PREPARE TOPIC DATA
+    =====================================================
+    */
+
+    nodes.forEach(node => {
+      node.uid = node.id;
+      node.type = "topic";
+    });
+
+    links.forEach(link => {
+      link.kind = "topic";
+    });
+
+
+    /*
+    =====================================================
+    SVG
+    =====================================================
+    */
 
     const svg = d3.select("#rhizome");
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     svg.attr("viewBox", [0, 0, width, height]);
 
-    // Everything goes inside this group so it can be zoomed.
+    const defs = svg.append("defs");
+
     const container = svg.append("g");
+
+    const linkLayer = container
+      .append("g")
+      .attr("class", "links");
+
+    const nodeLayer = container
+      .append("g")
+      .attr("class", "nodes");
+
+
+    /*
+    =====================================================
+    ZOOM
+    =====================================================
+    */
 
     svg.call(
       d3.zoom()
-        .scaleExtent([0.3, 4])
+        .scaleExtent([0.2, 5])
         .on("zoom", event => {
-          container.attr("transform", event.transform);
+          container.attr(
+            "transform",
+            event.transform
+          );
         })
     );
 
+
+    /*
+    =====================================================
+    COLORS
+    =====================================================
+    */
+
     const color = d3.scaleOrdinal()
-      .domain(["literature", "concept", "method", "history"])
-      .range(["#704c8c", "#ad6e9c", "#668d8a", "#b48257"]);
+      .domain([
+        "literature",
+        "concept",
+        "method",
+        "history",
+        "neurodivergence"
+      ])
+      .range([
+        "#704c8c",
+        "#ad6e9c",
+        "#668d8a",
+        "#b48257",
+        "#704c8c"
+      ]);
 
-    // Curved connections
-    const link = container.append("g")
-      .selectAll("path")
-      .data(links)
-      .join("path")
-      .attr("class", "link");
 
-    const node = container.append("g")
-      .selectAll("g")
-      .data(nodes)
-      .join("g")
-      .attr("class", "node")
-      .call(
-        d3.drag()
-          .on("start", dragStarted)
-          .on("drag", dragged)
-          .on("end", dragEnded)
-      );
+    /*
+    =====================================================
+    GRAPH SELECTIONS
+    =====================================================
+    */
 
-    node.append("circle")
-      .attr("r", d => d.size)
-      .attr("fill", d => color(d.group));
+    let linkSelection = linkLayer
+      .selectAll("path");
 
-    node.append("text")
-      .attr("x", d => d.size + 7)
-      .attr("y", 4)
-      .text(d => d.id);
+    let nodeSelection = nodeLayer
+      .selectAll("g.node");
 
-    node.append("title")
-      .text(d => `${d.id}\nCategory: ${d.group}`);
+
+    /*
+    =====================================================
+    DRAGGING
+    =====================================================
+    */
+
+    const dragBehavior = d3.drag()
+      .on("start", dragStarted)
+      .on("drag", dragged)
+      .on("end", dragEnded);
+
+
+    /*
+    =====================================================
+    FORCE SIMULATION
+    =====================================================
+    */
 
     const simulation = d3.forceSimulation(nodes)
+
       .force(
         "link",
         d3.forceLink(links)
-          .id(d => d.id)
-          .distance(d => 90 + Math.random() * 50)
-          .strength(0.35)
+          .id(node => node.uid)
+          .distance(link => {
+            return link.kind === "image"
+              ? 105
+              : 120;
+          })
+          .strength(link => {
+            return link.kind === "image"
+              ? 0.18
+              : 0.35;
+          })
       )
+
       .force(
         "charge",
         d3.forceManyBody()
-          .strength(-350)
+          .strength(node => {
+            return node.type === "image"
+              ? -180
+              : -350;
+          })
       )
+
       .force(
         "collision",
         d3.forceCollide()
-          .radius(d => d.size + 18)
+          .radius(node => node.size + 20)
+          .strength(0.9)
       )
+
       .force(
         "center",
-        d3.forceCenter(width / 2, height / 2)
+        d3.forceCenter(
+          width / 2,
+          height / 2
+        )
       )
+
       .force(
         "x",
-        d3.forceX(width / 2).strength(0.025)
+        d3.forceX(width / 2)
+          .strength(0.025)
       )
+
       .force(
         "y",
-        d3.forceY(height / 2).strength(0.025)
+        d3.forceY(height / 2)
+          .strength(0.025)
       )
+
       .on("tick", ticked);
 
+
+    /*
+    =====================================================
+    RENDER THE GRAPH
+    =====================================================
+    */
+
+    function renderGraph() {
+      const imageNodes = nodes.filter(node => {
+        return node.type === "image";
+      });
+
+
+      /*
+      Circular clipping paths for thumbnails
+      */
+
+      const clips = defs
+        .selectAll("clipPath.image-clip")
+        .data(
+          imageNodes,
+          node => node.uid
+        )
+        .join(
+          enter => {
+            const clip = enter
+              .append("clipPath")
+              .attr("class", "image-clip")
+              .attr(
+                "clipPathUnits",
+                "userSpaceOnUse"
+              );
+
+            clip.append("circle");
+
+            return clip;
+          },
+
+          update => update,
+
+          exit => exit.remove()
+        )
+        .attr(
+          "id",
+          node => `clip-${node.uid}`
+        );
+
+      clips
+        .select("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr(
+          "r",
+          node => node.size - 2
+        );
+
+
+      /*
+      Links
+      */
+
+      linkSelection = linkLayer
+        .selectAll("path")
+        .data(
+          links,
+          linkKey
+        )
+        .join("path")
+        .attr("class", link => {
+          return link.kind === "image"
+            ? "link image-link"
+            : "link";
+        });
+
+
+      /*
+      Nodes
+      */
+
+      nodeSelection = nodeLayer
+        .selectAll("g.node")
+        .data(
+          nodes,
+          node => node.uid
+        )
+        .join(
+
+          enter => {
+            const group = enter
+              .append("g")
+              .attr("class", node => {
+                return `node ${node.type}-node`;
+              })
+              .call(dragBehavior);
+
+            group
+              .append("circle")
+              .attr("class", "node-base");
+
+            group
+              .filter(node => {
+                return node.type === "image";
+              })
+              .append("image")
+              .attr("class", "thumbnail")
+              .attr(
+                "preserveAspectRatio",
+                "xMidYMid slice"
+              );
+
+            group
+              .filter(node => {
+                return node.type === "image";
+              })
+              .append("circle")
+              .attr(
+                "class",
+                "thumbnail-border"
+              );
+
+            group.append("text");
+            group.append("title");
+
+            return group;
+          },
+
+          update => update,
+
+          exit => exit.remove()
+        );
+
+
+      nodeSelection
+        .attr("class", node => {
+          return `node ${node.type}-node`;
+        });
+
+
+      /*
+      Node circles
+      */
+
+      nodeSelection
+        .select("circle.node-base")
+        .attr(
+          "r",
+          node => node.size
+        )
+        .attr("fill", node => {
+          if (node.type === "image") {
+            return "#ffffff";
+          }
+
+          return color(node.group);
+        });
+
+
+      /*
+      Thumbnail images
+      */
+
+      nodeSelection
+        .select("image.thumbnail")
+        .attr(
+          "href",
+          node => node.imageUrl
+        )
+        .attr(
+          "x",
+          node => -node.size
+        )
+        .attr(
+          "y",
+          node => -node.size
+        )
+        .attr(
+          "width",
+          node => node.size * 2
+        )
+        .attr(
+          "height",
+          node => node.size * 2
+        )
+        .attr(
+          "clip-path",
+          node => `url(#clip-${node.uid})`
+        );
+
+
+      /*
+      Thumbnail borders
+      */
+
+      nodeSelection
+        .select("circle.thumbnail-border")
+        .attr(
+          "r",
+          node => node.size
+        );
+
+
+      /*
+      Labels
+      */
+
+      nodeSelection
+        .select("text")
+        .attr(
+          "x",
+          node => node.size + 8
+        )
+        .attr("y", 4)
+        .text(node => node.id);
+
+
+      /*
+      Hover tooltip
+      */
+
+      nodeSelection
+        .select("title")
+        .text(node => {
+          if (node.type === "image") {
+            return node.filename || node.id;
+          }
+
+          return `${node.id}\nCategory: ${node.group}`;
+        });
+
+
+      simulation.nodes(nodes);
+
+      simulation
+        .force("link")
+        .links(links);
+
+      simulation
+        .alpha(0.9)
+        .restart();
+    }
+
+
+    /*
+    =====================================================
+    LOAD IMAGES FROM GITHUB
+    =====================================================
+    */
+
+    async function loadImagesFromGitHub() {
+      const status =
+        document.querySelector("#status");
+
+      try {
+        if (
+          GITHUB_USER === "YOUR_GITHUB_USERNAME" ||
+          GITHUB_REPO === "YOUR_REPOSITORY_NAME"
+        ) {
+          throw new Error(
+            "Enter your GitHub username and repository name near the top of the code."
+          );
+        }
+
+        const encodedFolder = IMAGES_FOLDER
+          .split("/")
+          .map(part => encodeURIComponent(part))
+          .join("/");
+
+        let apiURL =
+          `https://api.github.com/repos/` +
+          `${encodeURIComponent(GITHUB_USER)}/` +
+          `${encodeURIComponent(GITHUB_REPO)}/` +
+          `contents/${encodedFolder}`;
+
+        if (GITHUB_BRANCH) {
+          apiURL +=
+            `?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
+        }
+
+        const response = await fetch(
+          apiURL,
+          {
+            headers: {
+              Accept:
+                "application/vnd.github+json"
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `GitHub returned error ${response.status}. ` +
+            `Check the username, repository, folder and branch.`
+          );
+        }
+
+        const repositoryFiles =
+          await response.json();
+
+        if (!Array.isArray(repositoryFiles)) {
+          throw new Error(
+            "The images path is not a folder."
+          );
+        }
+
+        const imageFiles =
+          repositoryFiles.filter(file => {
+            return (
+              file.type === "file" &&
+              /\.(png|jpe?g|gif|webp|bmp|svg)$/i
+                .test(file.name)
+            );
+          });
+
+        if (imageFiles.length === 0) {
+          status.textContent =
+            "No compatible images found";
+
+          return;
+        }
+
+        const archiveNode = nodes.find(node => {
+          return node.uid === "Archive";
+        });
+
+        const centerX =
+          archiveNode?.x ?? width / 2;
+
+        const centerY =
+          archiveNode?.y ?? height / 2;
+
+
+        /*
+        Create one graph node for each GitHub image
+        */
+
+        imageFiles.forEach((file, index) => {
+          const uid = `github-image-${index}`;
+
+          const angle =
+            index * 2.399963;
+
+          const initialRadius =
+            70 + Math.sqrt(index) * 38;
+
+          nodes.push({
+            uid: uid,
+
+            id: removeExtension(file.name),
+
+            filename: file.name,
+
+            type: "image",
+
+            group: "image",
+
+            /*
+            Increase this value to make
+            the thumbnails larger.
+            */
+            size: 34,
+
+            imageUrl: file.download_url,
+
+            x:
+              centerX +
+              Math.cos(angle) *
+              initialRadius,
+
+            y:
+              centerY +
+              Math.sin(angle) *
+              initialRadius
+          });
+
+
+          /*
+          Every image connects to Archive.
+
+          Change "Archive" to "Autofiction",
+          "Memory", "Digital Humanities", etc.
+          */
+
+          links.push({
+            source: "Archive",
+            target: uid,
+            kind: "image"
+          });
+        });
+
+        status.textContent =
+          imageFiles.length === 1
+            ? "1 image loaded"
+            : `${imageFiles.length} images loaded`;
+
+        renderGraph();
+
+      } catch (error) {
+        console.error(error);
+
+        status.textContent =
+          `Could not load images: ${error.message}`;
+      }
+    }
+
+
+    /*
+    =====================================================
+    LINK ID
+    =====================================================
+    */
+
+    function linkKey(link) {
+      const source =
+        typeof link.source === "object"
+          ? link.source.uid
+          : link.source;
+
+      const target =
+        typeof link.target === "object"
+          ? link.target.uid
+          : link.target;
+
+      return `${source}-${target}-${link.kind}`;
+    }
+
+
+    /*
+    =====================================================
+    UPDATE POSITIONS
+    =====================================================
+    */
+
     function ticked() {
-      // Curved paths instead of straight lines
-      link.attr("d", d => {
-        const dx = d.target.x - d.source.x;
-        const dy = d.target.y - d.source.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+      linkSelection.attr("d", link => {
+        const dx =
+          link.target.x - link.source.x;
+
+        const dy =
+          link.target.y - link.source.y;
+
+        const distance = Math.max(
+          Math.sqrt(
+            dx * dx + dy * dy
+          ),
+          1
+        );
 
         return `
-          M ${d.source.x},${d.source.y}
+          M ${link.source.x},${link.source.y}
           A ${distance},${distance}
           0 0,1
-          ${d.target.x},${d.target.y}
+          ${link.target.x},${link.target.y}
         `;
       });
 
-      node.attr(
+      nodeSelection.attr(
         "transform",
-        d => `translate(${d.x}, ${d.y})`
+        node => {
+          return `translate(${node.x}, ${node.y})`;
+        }
       );
     }
 
-    function dragStarted(event, d) {
+
+    /*
+    =====================================================
+    DRAG FUNCTIONS
+    =====================================================
+    */
+
+    function dragStarted(event, node) {
       if (!event.active) {
-        simulation.alphaTarget(0.3).restart();
+        simulation
+          .alphaTarget(0.3)
+          .restart();
       }
 
-      d.fx = d.x;
-      d.fy = d.y;
+      node.fx = node.x;
+      node.fy = node.y;
     }
 
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
+
+    function dragged(event, node) {
+      node.fx = event.x;
+      node.fy = event.y;
     }
 
-    function dragEnded(event, d) {
+
+    function dragEnded(event, node) {
       if (!event.active) {
         simulation.alphaTarget(0);
       }
 
-      // Release the node after dragging.
-      d.fx = null;
-      d.fy = null;
+      node.fx = null;
+      node.fy = null;
     }
+
+
+    /*
+    =====================================================
+    REMOVE FILE EXTENSION
+    =====================================================
+    */
+
+    function removeExtension(filename) {
+      return filename.replace(
+        /\.[^/.]+$/,
+        ""
+      );
+    }
+
+
+    /*
+    =====================================================
+    WINDOW RESIZING
+    =====================================================
+    */
+
+    window.addEventListener(
+      "resize",
+      () => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        svg.attr(
+          "viewBox",
+          [0, 0, width, height]
+        );
+
+        simulation.force(
+          "center",
+          d3.forceCenter(
+            width / 2,
+            height / 2
+          )
+        );
+
+        simulation.force(
+          "x",
+          d3.forceX(width / 2)
+            .strength(0.025)
+        );
+
+        simulation.force(
+          "y",
+          d3.forceY(height / 2)
+            .strength(0.025)
+        );
+
+        simulation
+          .alpha(0.4)
+          .restart();
+      }
+    );
+
+
+    /*
+    =====================================================
+    INITIALIZE
+    =====================================================
+    */
+
+    renderGraph();
+    loadImagesFromGitHub();
+
   </script>
 </body>
 </html>
