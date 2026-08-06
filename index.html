@@ -10,8 +10,14 @@
 
   <title>Image-Only Rhizome Graph</title>
 
+  <!-- D3.js -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
   <style>
+    html,
     body {
+      width: 100%;
+      height: 100%;
       margin: 0;
       overflow: hidden;
       font-family: Arial, sans-serif;
@@ -43,12 +49,13 @@
       box-shadow: 0 2px 10px rgba(70, 50, 80, 0.14);
 
       font-size: 13px;
+      pointer-events: none;
     }
 
     .link {
       fill: none;
       stroke: #9c8ca8;
-      stroke-opacity: 0.30;
+      stroke-opacity: 0.3;
       stroke-width: 1.5px;
     }
 
@@ -59,7 +66,7 @@
     .node-base {
       fill: #ffffff;
       stroke: #ffffff;
-      stroke-width: 3px;
+      stroke-width: 4px;
     }
 
     .thumbnail {
@@ -72,104 +79,104 @@
       stroke-width: 3px;
       pointer-events: none;
     }
-
-    .node text {
-      opacity: 0;
-      font-size: 12px;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-
-      paint-order: stroke;
-      stroke: #faf8fc;
-      stroke-width: 5px;
-      stroke-linejoin: round;
-    }
-
-    .node:hover text {
-      opacity: 1;
-    }
   </style>
 </head>
 
 <body>
 
   <div id="status">
-    Loading images...
+    Loading images…
   </div>
 
-  <svg id="rhizome"></svg>
+  <svg
+    id="graph"
+    aria-label="Interactive image rhizome"
+  ></svg>
 
-  <script type="module">
-    import * as d3 from
-      "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+  <script>
+    "use strict";
 
 
     /*
     =====================================================
-    GITHUB SETTINGS
+    EDIT THESE VALUES
     =====================================================
     */
 
-    const GITHUB_USER = "a-repo-of-ones-own";
-    const GITHUB_REPO = "Neurorrizoma";
+    const GITHUB_USER = "YOUR_GITHUB_USERNAME";
+    const GITHUB_REPO = "YOUR_REPOSITORY_NAME";
 
-    /*
-    Leave this empty to use the repository's default branch.
-
-    Otherwise, write:
     const GITHUB_BRANCH = "main";
-    */
-    const GITHUB_BRANCH = "";
-
-    const IMAGES_FOLDER = "images";
+    const IMAGE_FOLDER = "images";
 
 
     /*
     =====================================================
-    IMAGE-ONLY GRAPH DATA
+    IMAGE SIZE SETTINGS
     =====================================================
     */
 
-    const nodes = [];
-    const links = [];
+    // Normal image radius
+    const NODE_RADIUS = 34;
+
+    // How large the image becomes when the mouse passes over it
+    const HOVER_SCALE = 2.2;
+
+    // Speed of the enlargement animation
+    const HOVER_DURATION = 180;
 
 
     /*
     =====================================================
-    SVG
+    BASIC SETUP
     =====================================================
     */
 
-    const svg = d3.select("#rhizome");
+    const statusBox = document.getElementById("status");
+
+    const svg = d3.select("#graph");
 
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    svg.attr("viewBox", [0, 0, width, height]);
+    let simulation;
 
-    const defs = svg.append("defs");
-    const container = svg.append("g");
-
-    const linkLayer = container
-      .append("g")
-      .attr("class", "links");
-
-    const nodeLayer = container
-      .append("g")
-      .attr("class", "nodes");
+    svg.attr(
+      "viewBox",
+      [0, 0, width, height]
+    );
 
 
     /*
     =====================================================
-    ZOOM
+    GRAPH LAYERS
+    =====================================================
+    */
+
+    const graphLayer = svg
+      .append("g");
+
+    const linkLayer = graphLayer
+      .append("g");
+
+    const nodeLayer = graphLayer
+      .append("g");
+
+    const defs = svg
+      .append("defs");
+
+
+    /*
+    =====================================================
+    ZOOM AND PAN
     =====================================================
     */
 
     svg.call(
       d3.zoom()
-        .scaleExtent([0.2, 5])
+        .scaleExtent([0.25, 5])
         .on("zoom", event => {
-          container.attr(
+          graphLayer.attr(
             "transform",
             event.transform
           );
@@ -179,501 +186,605 @@
 
     /*
     =====================================================
-    GRAPH SELECTIONS
-    =====================================================
-    */
-
-    let linkSelection = linkLayer
-      .selectAll("path");
-
-    let nodeSelection = nodeLayer
-      .selectAll("g.node");
-
-
-    /*
-    =====================================================
-    DRAGGING
-    =====================================================
-    */
-
-    const dragBehavior = d3.drag()
-      .on("start", dragStarted)
-      .on("drag", dragged)
-      .on("end", dragEnded);
-
-
-    /*
-    =====================================================
-    FORCE SIMULATION
-    =====================================================
-    */
-
-    const simulation = d3.forceSimulation(nodes)
-
-      .force(
-        "link",
-        d3.forceLink(links)
-          .id(node => node.uid)
-          .distance(115)
-          .strength(0.20)
-      )
-
-      .force(
-        "charge",
-        d3.forceManyBody()
-          .strength(-220)
-      )
-
-      .force(
-        "collision",
-        d3.forceCollide()
-          .radius(node => node.size + 16)
-          .strength(0.9)
-      )
-
-      .force(
-        "center",
-        d3.forceCenter(
-          width / 2,
-          height / 2
-        )
-      )
-
-      .force(
-        "x",
-        d3.forceX(width / 2)
-          .strength(0.025)
-      )
-
-      .force(
-        "y",
-        d3.forceY(height / 2)
-          .strength(0.025)
-      )
-
-      .on("tick", ticked);
-
-
-    /*
-    =====================================================
-    RENDER THE GRAPH
-    =====================================================
-    */
-
-    function renderGraph() {
-
-      /*
-      Circular clipping paths for thumbnails
-      */
-
-      const clips = defs
-        .selectAll("clipPath.image-clip")
-        .data(
-          nodes,
-          node => node.uid
-        )
-        .join(
-          enter => {
-            const clip = enter
-              .append("clipPath")
-              .attr("class", "image-clip")
-              .attr(
-                "clipPathUnits",
-                "userSpaceOnUse"
-              );
-
-            clip.append("circle");
-
-            return clip;
-          },
-
-          update => update,
-
-          exit => exit.remove()
-        )
-        .attr(
-          "id",
-          node => `clip-${node.uid}`
-        );
-
-      clips
-        .select("circle")
-        .attr("cx", 0)
-        .attr("cy", 0)
-        .attr(
-          "r",
-          node => node.size - 2
-        );
-
-
-      /*
-      Image-to-image links
-      */
-
-      linkSelection = linkLayer
-        .selectAll("path")
-        .data(
-          links,
-          linkKey
-        )
-        .join("path")
-        .attr("class", "link");
-
-
-      /*
-      Image nodes
-      */
-
-      nodeSelection = nodeLayer
-        .selectAll("g.node")
-        .data(
-          nodes,
-          node => node.uid
-        )
-        .join(
-
-          enter => {
-            const group = enter
-              .append("g")
-              .attr("class", "node")
-              .call(dragBehavior);
-
-            group
-              .append("circle")
-              .attr("class", "node-base");
-
-            group
-              .append("image")
-              .attr("class", "thumbnail")
-              .attr(
-                "preserveAspectRatio",
-                "xMidYMid slice"
-              );
-
-            group
-              .append("circle")
-              .attr(
-                "class",
-                "thumbnail-border"
-              );
-
-            group.append("text");
-            group.append("title");
-
-            return group;
-          },
-
-          update => update,
-
-          exit => exit.remove()
-        );
-
-
-      /*
-      Base circles
-      */
-
-      nodeSelection
-        .select("circle.node-base")
-        .attr(
-          "r",
-          node => node.size
-        );
-
-
-      /*
-      Thumbnail images
-      */
-
-      nodeSelection
-        .select("image.thumbnail")
-        .attr(
-          "href",
-          node => node.imageUrl
-        )
-        .attr(
-          "x",
-          node => -node.size
-        )
-        .attr(
-          "y",
-          node => -node.size
-        )
-        .attr(
-          "width",
-          node => node.size * 2
-        )
-        .attr(
-          "height",
-          node => node.size * 2
-        )
-        .attr(
-          "clip-path",
-          node => `url(#clip-${node.uid})`
-        );
-
-
-      /*
-      Thumbnail borders
-      */
-
-      nodeSelection
-        .select("circle.thumbnail-border")
-        .attr(
-          "r",
-          node => node.size
-        );
-
-
-      /*
-      Labels
-      */
-
-      nodeSelection
-        .select("text")
-        .attr(
-          "x",
-          node => node.size + 8
-        )
-        .attr("y", 4)
-        .text(node => node.id);
-
-
-      /*
-      Hover tooltip
-      */
-
-      nodeSelection
-        .select("title")
-        .text(node => node.filename || node.id);
-
-
-      /*
-      Open the original image when clicked
-      */
-
-      nodeSelection
-        .on("click", (event, node) => {
-          event.stopPropagation();
-          window.open(node.imageUrl, "_blank");
-        });
-
-
-      simulation.nodes(nodes);
-
-      simulation
-        .force("link")
-        .links(links);
-
-      simulation
-        .alpha(0.9)
-        .restart();
-    }
-
-
-    /*
-    =====================================================
-    LOAD IMAGES FROM GITHUB
+    LOAD IMAGE FILES FROM GITHUB
     =====================================================
     */
 
     async function loadImagesFromGitHub() {
-      const status =
-        document.querySelector("#status");
+
+      const apiUrl =
+        `https://api.github.com/repos/` +
+        `${encodeURIComponent(GITHUB_USER)}/` +
+        `${encodeURIComponent(GITHUB_REPO)}/` +
+        `contents/${encodeURIComponent(IMAGE_FOLDER)}` +
+        `?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
 
       try {
-        const encodedFolder = IMAGES_FOLDER
-          .split("/")
-          .map(part => encodeURIComponent(part))
-          .join("/");
 
-        let apiURL =
-          `https://api.github.com/repos/` +
-          `${encodeURIComponent(GITHUB_USER)}/` +
-          `${encodeURIComponent(GITHUB_REPO)}/` +
-          `contents/${encodedFolder}`;
-
-        if (GITHUB_BRANCH) {
-          apiURL +=
-            `?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
-        }
+        statusBox.textContent = "Loading images…";
 
         const response = await fetch(
-          apiURL,
+          apiUrl,
           {
             headers: {
-              Accept:
-                "application/vnd.github+json"
+              Accept: "application/vnd.github+json"
             }
           }
         );
 
         if (!response.ok) {
           throw new Error(
-            `GitHub returned error ${response.status}. ` +
-            `Check the username, repository, folder and branch.`
+            `GitHub returned ${response.status}. ` +
+            `Check the username, repository, branch, ` +
+            `and images folder name.`
           );
         }
 
-        const repositoryFiles =
-          await response.json();
+        const files = await response.json();
 
-        if (!Array.isArray(repositoryFiles)) {
+        if (!Array.isArray(files)) {
           throw new Error(
-            "The images path is not a folder."
+            "The GitHub images path is not a folder."
           );
         }
 
-        const imageFiles =
-          repositoryFiles.filter(file => {
+
+        /*
+        Keep only image files
+        */
+
+        const imageFiles = files
+          .filter(file => {
+
             return (
               file.type === "file" &&
-              /\.(png|jpe?g|gif|webp|bmp|svg)$/i
+              /\.(png|jpe?g|gif|webp|svg|bmp|avif)$/i
                 .test(file.name)
             );
+
+          })
+          .sort((a, b) => {
+            return a.name.localeCompare(b.name);
           });
 
-        if (imageFiles.length === 0) {
-          status.textContent =
-            "No compatible images found";
 
-          return;
+        if (imageFiles.length === 0) {
+          throw new Error(
+            `No images were found inside “${IMAGE_FOLDER}”.`
+          );
         }
 
 
         /*
-        Create one graph node for every image
+        Turn the image files into graph nodes
         */
 
-        imageFiles.forEach((file, index) => {
-          const uid = `github-image-${index}`;
+        const nodes = imageFiles.map(
+          (file, index) => {
 
-          const angle =
-            index * 2.399963;
+            return {
+              id: index,
+              name: removeExtension(file.name),
+              fileName: file.name,
+              imageUrl: file.download_url,
+              githubUrl: file.html_url
+            };
 
-          const initialRadius =
-            40 + Math.sqrt(index) * 48;
-
-          nodes.push({
-            uid: uid,
-
-            id: removeExtension(file.name),
-
-            filename: file.name,
-
-            size: 38,
-
-            imageUrl: file.download_url,
-
-            x:
-              width / 2 +
-              Math.cos(angle) *
-              initialRadius,
-
-            y:
-              height / 2 +
-              Math.sin(angle) *
-              initialRadius
-          });
-        });
+          }
+        );
 
 
         /*
-        Connect images only to other images.
-
-        Each image connects to the previous image.
-        Some images also receive a second connection,
-        making the layout look more rhizomatic.
+        Create connections between images
         */
 
-        nodes.forEach((node, index) => {
-          if (index > 0) {
-            links.push({
-              source: nodes[index - 1].uid,
-              target: node.uid
-            });
-          }
+        const links = createRhizomeLinks(nodes);
 
-          if (index > 3) {
-            links.push({
-              source: nodes[index - 3].uid,
-              target: node.uid
-            });
-          }
-        });
 
-        status.textContent =
-          imageFiles.length === 1
-            ? "1 image loaded"
-            : `${imageFiles.length} images loaded`;
+        /*
+        Draw the graph
+        */
 
-        renderGraph();
+        drawGraph(nodes, links);
+
+        statusBox.textContent =
+          `${nodes.length} images · ` +
+          `hover to enlarge · ` +
+          `drag to move`;
 
       } catch (error) {
+
         console.error(error);
 
-        status.textContent =
-          `Could not load images: ${error.message}`;
+        statusBox.textContent = error.message;
+
       }
     }
 
 
     /*
     =====================================================
-    LINK ID
+    CREATE RHIZOME-LIKE CONNECTIONS
     =====================================================
     */
 
-    function linkKey(link) {
-      const source =
-        typeof link.source === "object"
-          ? link.source.uid
-          : link.source;
+    function createRhizomeLinks(nodes) {
 
-      const target =
-        typeof link.target === "object"
-          ? link.target.uid
-          : link.target;
+      const links = [];
 
-      return `${source}-${target}`;
+      const usedPairs = new Set();
+
+
+      function addLink(sourceIndex, targetIndex) {
+
+        if (sourceIndex === targetIndex) {
+          return;
+        }
+
+        const low = Math.min(
+          sourceIndex,
+          targetIndex
+        );
+
+        const high = Math.max(
+          sourceIndex,
+          targetIndex
+        );
+
+        const key = `${low}-${high}`;
+
+        if (usedPairs.has(key)) {
+          return;
+        }
+
+        usedPairs.add(key);
+
+        links.push({
+          source: nodes[sourceIndex].id,
+          target: nodes[targetIndex].id
+        });
+      }
+
+
+      nodes.forEach((node, index) => {
+
+        /*
+        Connect each image with the next image
+        */
+
+        addLink(
+          index,
+          (index + 1) % nodes.length
+        );
+
+
+        /*
+        Connect with the image two positions away
+        */
+
+        if (nodes.length > 2) {
+
+          addLink(
+            index,
+            (index + 2) % nodes.length
+          );
+
+        }
+
+
+        /*
+        Add one random connection
+        */
+
+        if (nodes.length > 4) {
+
+          const randomIndex =
+            Math.floor(
+              Math.random() * nodes.length
+            );
+
+          addLink(
+            index,
+            randomIndex
+          );
+
+        }
+      });
+
+
+      return links;
     }
 
 
     /*
     =====================================================
-    UPDATE POSITIONS
+    DRAW GRAPH
     =====================================================
     */
 
-    function ticked() {
-      linkSelection.attr("d", link => {
-        const dx =
-          link.target.x - link.source.x;
+    function drawGraph(nodes, links) {
 
-        const dy =
-          link.target.y - link.source.y;
+      linkLayer
+        .selectAll("*")
+        .remove();
 
-        const distance = Math.max(
-          Math.sqrt(
-            dx * dx + dy * dy
-          ),
-          1
-        );
+      nodeLayer
+        .selectAll("*")
+        .remove();
 
-        return `
-          M ${link.source.x},${link.source.y}
-          A ${distance},${distance}
-          0 0,1
-          ${link.target.x},${link.target.y}
-        `;
+      defs
+        .selectAll("*")
+        .remove();
+
+
+      /*
+      Create circular clipping areas
+      */
+
+      nodes.forEach(node => {
+
+        defs
+          .append("clipPath")
+          .attr(
+            "id",
+            `clip-${node.id}`
+          )
+          .append("circle")
+          .attr(
+            "r",
+            NODE_RADIUS
+          );
+
       });
 
-      nodeSelection.attr(
-        "transform",
-        node => {
-          return `translate(${node.x}, ${node.y})`;
+
+      /*
+      Create links
+      */
+
+      const linkSelection = linkLayer
+        .selectAll("path")
+        .data(links)
+        .join("path")
+        .attr(
+          "class",
+          "link"
+        );
+
+
+      /*
+      Create node containers
+      */
+
+      const nodeSelection = nodeLayer
+        .selectAll("g.node")
+        .data(
+          nodes,
+          node => node.id
+        )
+        .join("g")
+        .attr(
+          "class",
+          "node"
+        )
+        .call(
+          d3.drag()
+            .on(
+              "start",
+              dragStarted
+            )
+            .on(
+              "drag",
+              dragged
+            )
+            .on(
+              "end",
+              dragEnded
+            )
+        );
+
+
+      /*
+      This nested group is enlarged on hover.
+
+      The outer node group continues controlling
+      the position of the image.
+      */
+
+      const nodeVisual = nodeSelection
+        .append("g")
+        .attr(
+          "class",
+          "node-visual"
+        )
+        .attr(
+          "transform",
+          "scale(1)"
+        );
+
+
+      /*
+      White background
+      */
+
+      nodeVisual
+        .append("circle")
+        .attr(
+          "class",
+          "node-base"
+        )
+        .attr(
+          "r",
+          NODE_RADIUS + 2
+        );
+
+
+      /*
+      Thumbnail image
+      */
+
+      nodeVisual
+        .append("image")
+        .attr(
+          "class",
+          "thumbnail"
+        )
+        .attr(
+          "href",
+          node => node.imageUrl
+        )
+        .attr(
+          "x",
+          -NODE_RADIUS
+        )
+        .attr(
+          "y",
+          -NODE_RADIUS
+        )
+        .attr(
+          "width",
+          NODE_RADIUS * 2
+        )
+        .attr(
+          "height",
+          NODE_RADIUS * 2
+        )
+        .attr(
+          "preserveAspectRatio",
+          "xMidYMid slice"
+        )
+        .attr(
+          "clip-path",
+          node => `url(#clip-${node.id})`
+        );
+
+
+      /*
+      White border
+      */
+
+      nodeVisual
+        .append("circle")
+        .attr(
+          "class",
+          "thumbnail-border"
+        )
+        .attr(
+          "r",
+          NODE_RADIUS
+        );
+
+
+      /*
+      Browser tooltip with image filename
+      */
+
+      nodeSelection
+        .append("title")
+        .text(
+          node => node.fileName
+        );
+
+
+      /*
+      =====================================================
+      ENLARGE IMAGE ON HOVER
+      =====================================================
+      */
+
+      nodeSelection
+        .on(
+          "mouseenter",
+          function () {
+
+            /*
+            Place the selected image above
+            the other images
+            */
+
+            d3.select(this).raise();
+
+
+            /*
+            Enlarge the visual group
+            */
+
+            d3.select(this)
+              .select(".node-visual")
+              .interrupt()
+              .transition()
+              .duration(HOVER_DURATION)
+              .ease(d3.easeCubicOut)
+              .attr(
+                "transform",
+                `scale(${HOVER_SCALE})`
+              );
+
+          }
+        )
+        .on(
+          "mouseleave",
+          function () {
+
+            /*
+            Return to normal size
+            */
+
+            d3.select(this)
+              .select(".node-visual")
+              .interrupt()
+              .transition()
+              .duration(HOVER_DURATION)
+              .ease(d3.easeCubicOut)
+              .attr(
+                "transform",
+                "scale(1)"
+              );
+
+          }
+        );
+
+
+      /*
+      Open full-size image when clicked
+      */
+
+      nodeSelection.on(
+        "click",
+        (event, node) => {
+
+          /*
+          Do not open the image after dragging it
+          */
+
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          window.open(
+            node.imageUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
         }
       );
+
+
+      /*
+      =====================================================
+      FORCE SIMULATION
+      =====================================================
+      */
+
+      simulation = d3
+        .forceSimulation(nodes)
+
+        .force(
+          "link",
+          d3.forceLink(links)
+            .id(
+              node => node.id
+            )
+            .distance(115)
+            .strength(0.22)
+        )
+
+        .force(
+          "charge",
+          d3.forceManyBody()
+            .strength(-150)
+        )
+
+        .force(
+          "center",
+          d3.forceCenter(
+            width / 2,
+            height / 2
+          )
+        )
+
+        .force(
+          "x",
+          d3.forceX(
+            width / 2
+          )
+          .strength(0.025)
+        )
+
+        .force(
+          "y",
+          d3.forceY(
+            height / 2
+          )
+          .strength(0.025)
+        )
+
+        .force(
+          "collision",
+          d3.forceCollide(
+            NODE_RADIUS + 12
+          )
+        )
+
+        .on(
+          "tick",
+          ticked
+        );
+
+
+      /*
+      Update graph positions
+      */
+
+      function ticked() {
+
+        linkSelection.attr(
+          "d",
+          link => {
+
+            const dx =
+              link.target.x -
+              link.source.x;
+
+            const dy =
+              link.target.y -
+              link.source.y;
+
+            const distance = Math.max(
+              Math.sqrt(
+                dx * dx +
+                dy * dy
+              ),
+              1
+            );
+
+            return (
+              `M ${link.source.x},${link.source.y}` +
+              ` A ${distance},${distance}` +
+              ` 0 0,1` +
+              ` ${link.target.x},${link.target.y}`
+            );
+
+          }
+        );
+
+
+        nodeSelection.attr(
+          "transform",
+          node => {
+
+            return (
+              `translate(` +
+              `${node.x}, ` +
+              `${node.y}` +
+              `)`
+            );
+
+          }
+        );
+
+      }
     }
 
 
@@ -684,10 +795,13 @@
     */
 
     function dragStarted(event, node) {
+
       if (!event.active) {
+
         simulation
           .alphaTarget(0.3)
           .restart();
+
       }
 
       node.fx = node.x;
@@ -696,18 +810,25 @@
 
 
     function dragged(event, node) {
+
       node.fx = event.x;
       node.fy = event.y;
+
     }
 
 
     function dragEnded(event, node) {
+
       if (!event.active) {
-        simulation.alphaTarget(0);
+
+        simulation
+          .alphaTarget(0);
+
       }
 
       node.fx = null;
       node.fy = null;
+
     }
 
 
@@ -718,10 +839,12 @@
     */
 
     function removeExtension(filename) {
+
       return filename.replace(
         /\.[^/.]+$/,
         ""
       );
+
     }
 
 
@@ -734,6 +857,7 @@
     window.addEventListener(
       "resize",
       () => {
+
         width = window.innerWidth;
         height = window.innerHeight;
 
@@ -741,6 +865,10 @@
           "viewBox",
           [0, 0, width, height]
         );
+
+        if (!simulation) {
+          return;
+        }
 
         simulation.force(
           "center",
@@ -752,19 +880,24 @@
 
         simulation.force(
           "x",
-          d3.forceX(width / 2)
-            .strength(0.025)
+          d3.forceX(
+            width / 2
+          )
+          .strength(0.025)
         );
 
         simulation.force(
           "y",
-          d3.forceY(height / 2)
-            .strength(0.025)
+          d3.forceY(
+            height / 2
+          )
+          .strength(0.025)
         );
 
         simulation
           .alpha(0.4)
           .restart();
+
       }
     );
 
@@ -778,5 +911,6 @@
     loadImagesFromGitHub();
 
   </script>
+
 </body>
 </html>
