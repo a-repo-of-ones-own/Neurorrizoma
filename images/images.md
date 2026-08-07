@@ -35,7 +35,7 @@
 | RDT_20241217_2149307273412911064936827.jpg | bleh |
 | RDT_20241223_1310307249065315647514315.jpg | ESTOOO, siempre me han malinterpretado es muy cansado |
 | RDT_20250110_1901246081310344327713024.jpg | Todo desde el punto de vista capitalista y desde lo que hace la vida complicada a los médicos, maestros y padres |
-| RDT_20250411_1402556579957226709287136.jpg | "Tania eS Un AluMnA eXceLenTE, pinche vieja solo por que te hago la vida fácil |
+| RDT_20250411_1402556579957226709287136.jpg | "Tania eS Un AluMnA eXceLenTE, pinche vieja solo por que te hago la vida fácil tengo un transtorno de ansiedad que nadie se ha dado cuenta solo por que soy "buena alumna" |
 | RDT_20250415_1234183109079423680852404.jpg | Ahora entiendo a mis compañeritos "rebeldes" si pudiera regrear el tiempo seria tan caótica y feliz |
 | RDT_20250507_2238488986678831529453492.jpg | Luego siento que el español tampoco es tan lengua nativa para mi, ni el español ni el inglés, luego cada uno tiene sus propias afecciones muy particulares |
 | RDT_20250920_0351434926078639142753092.jpg | Pero conexiones que a nadie le parece interesntes mas que a mi... |
