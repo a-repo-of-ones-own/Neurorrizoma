@@ -10,24 +10,24 @@
 | Gemini_Generated_Image_n53p1in53p1in53p.png |  Ansiedad encubria TDAH, TDAH encubría Autismo |
 | Picture1.png | Los médicos ni me escuchan a mi directamente ni a mi género |
 | Picture10.png | No tuve oportunidad por haber nacido en la epoca en la que nací |
-| Picture2.png |  |
-| Picture3.png | El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo |
+| Picture2.png | Ain't Nobody Got Time for That |
+| Picture3.png |  |
 | Picture4.png |  |
 | Picture5.png |   |
 | Picture6.png |   |
 | Picture7.png |  |
 | Picture8.png | |
 | Picture9.png |  |
-| RDT_20230808_1240156748472046140833118.jpg |  |
+| RDT_20230808_1240156748472046140833118.jpg | El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo |
 | RDT_20230902_1530567223832394279315874.jpg | A veces siento que el TDAH es una condición anticapitalista |
 | RDT_20230926_0357173691324169834869702.jpg | el DSM fue una mega decepción, pensé que era mas claro y mas específico, pero en un conjunto de checklist |
 | RDT_20230926_1732528670369116409641610.jpg | En mi defensa mi cerebro hace lo que quiere |
 | RDT_20231008_1625537703875738345230798.jpg | El presidente de Uruguay era Aparicio Méndez, quien gobernaba de facto durante el periodo de la dictadura cívico-militar (1973-1985) GOTTA KNOW  |
 | RDT_20231220_2007262425227007685855164.jpg | Estoy seriamente dudando de si voy a poder con mi tesis doctoral |
-| RDT_20231229_16082477922639232012432.jpg |  |
-| RDT_20240120_0710163958576075294714469.jpg |  |
-| RDT_20240211_1729508283935535874587332.jpg |  |
-| RDT_20240324_1854458389048022320374850.jpg |  |
+| RDT_20231229_16082477922639232012432.jpg | Fui feliz encerrada en la pandemia, pero no podia creer lo fácil que la gente no le importaban los demás... |
+| RDT_20240120_0710163958576075294714469.jpg | Sleep is for the weak |
+| RDT_20240211_1729508283935535874587332.jpg | Estos diagnósticos explican tanto de mi niñez, lloro por todo hasta de adulta |
+| RDT_20240324_1854458389048022320374850.jpg | Investigar para la tesis ◉‿◉, ponerlo por escrito formalmente x_x  |
 | RDT_20240329_0024531652374641903798217.jpg |  |
 | RDT_20240405_2147584360606277228461996.jpg |  |
 | RDT_20240826_0655051385278235034746783.jpg |  |
