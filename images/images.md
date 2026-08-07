@@ -9,15 +9,15 @@
 | Gemini_Generated_Image_n3vcavn3vcavn3vc.png |  La atención médica es complicada, comunicarse con medicos es complicado, lo que creo que es importante lo ignoran, lo que no me parece importante es una catástrofe moral |
 | Gemini_Generated_Image_n53p1in53p1in53p.png |  Ansiedad encubria TDAH, TDAH encubría Autismo |
 | Picture1.png | Los médicos ni me escuchan a mi directamente ni a mi género |
-| Picture10.png | No tuve oportunidad por haber nacido en la epoca en la que nací |
+| Picture10.png | No tuve oportunidad por haber nacido en la década en la que nací |
 | Picture2.png | Ain't Nobody Got Time for That |
-| Picture3.png |  |
-| Picture4.png |  |
-| Picture5.png |   |
-| Picture6.png |   |
-| Picture7.png |  |
-| Picture8.png | |
-| Picture9.png |  |
+| Picture3.png | or this |
+| Picture4.png | and this |
+| Picture5.png | hell no |
+| Picture6.png | hate doctors |
+| Picture7.png | Extraño aprender francés |
+| Picture8.png | Si las gotas de lluvia fueran de Serlatina |
+| Picture9.png | |
 | RDT_20230808_1240156748472046140833118.jpg | El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo |
 | RDT_20230902_1530567223832394279315874.jpg | A veces siento que el TDAH es una condición anticapitalista |
 | RDT_20230926_0357173691324169834869702.jpg | el DSM fue una mega decepción, pensé que era mas claro y mas específico, pero en un conjunto de checklist |
@@ -28,17 +28,17 @@
 | RDT_20240120_0710163958576075294714469.jpg | Sleep is for the weak |
 | RDT_20240211_1729508283935535874587332.jpg | Estos diagnósticos explican tanto de mi niñez, lloro por todo hasta de adulta |
 | RDT_20240324_1854458389048022320374850.jpg | Investigar para la tesis ◉‿◉, ponerlo por escrito formalmente x_x  |
-| RDT_20240329_0024531652374641903798217.jpg |  |
-| RDT_20240405_2147584360606277228461996.jpg |  |
-| RDT_20240826_0655051385278235034746783.jpg |  |
-| RDT_20240830_200833290892850831367932.jpg |  |
-| RDT_20241217_2149307273412911064936827.jpg |  |
-| RDT_20241223_1310307249065315647514315.jpg |  |
-| RDT_20250110_1901246081310344327713024.jpg |  |
-| RDT_20250411_1402556579957226709287136.jpg |  |
-| RDT_20250415_1234183109079423680852404.jpg |  |
-| RDT_20250507_2238488986678831529453492.jpg |  |
-| RDT_20250920_0351434926078639142753092.jpg |  |
+| RDT_20240329_0024531652374641903798217.jpg | Bueno no me había dado cuenta de que si tengo una rutina |
+| RDT_20240405_2147584360606277228461996.jpg | Espero reencarnar en un gato clasemedieron |
+| RDT_20240826_0655051385278235034746783.jpg | This is why I don't talk to my parents |
+| RDT_20240830_200833290892850831367932.jpg | Me encanta aprender del movimiento anti-psiquiatría, pero estos diagnosticos y la sertralina me han hecho reevaluar toda mi vida |
+| RDT_20241217_2149307273412911064936827.jpg | bleh |
+| RDT_20241223_1310307249065315647514315.jpg | ESTOOO, siempre me han malinterpretado es muy cansado |
+| RDT_20250110_1901246081310344327713024.jpg | Todo desde el punto de vista capitalista y desde lo que hace la vida complicada a los médicos, maestros y padres |
+| RDT_20250411_1402556579957226709287136.jpg | "Tania eS Un AluMnA eXceLenTE, pinche vieja solo por que te hago la vida fácil |
+| RDT_20250415_1234183109079423680852404.jpg | Ahora entiendo a mis compañeritos "rebeldes" si pudiera regrear el tiempo seria tan caótica y feliz |
+| RDT_20250507_2238488986678831529453492.jpg | Luego siento que el español tampoco es tan lengua nativa para mi, ni el español ni el inglés, luego cada uno tiene sus propias afecciones muy particulares |
+| RDT_20250920_0351434926078639142753092.jpg | Pero conexiones que a nadie le parece interesntes mas que a mi... |
 | images - 2023-11-16T150720.226.jpeg |  |
 | images - 2024-01-12T211434.258.jpeg |  |
 | images - 2024-10-18T184944.471.jpeg |  |
