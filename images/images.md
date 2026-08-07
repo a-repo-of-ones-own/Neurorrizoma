@@ -39,8 +39,8 @@
 | RDT_20250415_1234183109079423680852404.jpg | Ahora entiendo a mis compañeritos "rebeldes" si pudiera regrear el tiempo seria tan caótica y feliz |
 | RDT_20250507_2238488986678831529453492.jpg | Luego siento que el español tampoco es tan lengua nativa para mi, ni el español ni el inglés, luego cada uno tiene sus propias afecciones muy particulares |
 | RDT_20250920_0351434926078639142753092.jpg | Pero conexiones que a nadie le parece interesntes mas que a mi... |
-| images - 2023-11-16T150720.226.jpeg |  |
-| images - 2024-01-12T211434.258.jpeg |  |
-| images - 2024-10-18T184944.471.jpeg |  |
-| images - 2025-01-17T121920.380.jpeg |  |
-| images - 2025-04-05T205213.049 (1).jpeg |  |
+| images - 2023-11-16T150720.226.jpeg | YA  |
+| images - 2024-01-12T211434.258.jpeg | NO |
+| images - 2024-10-18T184944.471.jpeg | PUEDO |
+| images - 2025-01-17T121920.380.jpeg | MAS |
+| images - 2025-04-05T205213.049 (1).jpeg | Shiny and full of secrets? Gotta know! |
