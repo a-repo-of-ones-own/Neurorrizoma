@@ -16,8 +16,8 @@
 | Picture5.png | hell no |
 | Picture6.png | hate doctors |
 | Picture7.png | Extraño aprender francés |
-| Picture8.png | Si las gotas de lluvia fueran de Serlatina |
-| Picture9.png | |
+| Picture8.png | Si las gotas de lluvia fueran de Serlatina... |
+| Picture9.png | ...me encantaría estar ahi|
 | RDT_20230808_1240156748472046140833118.jpg | El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo |
 | RDT_20230902_1530567223832394279315874.jpg | A veces siento que el TDAH es una condición anticapitalista |
 | RDT_20230926_0357173691324169834869702.jpg | el DSM fue una mega decepción, pensé que era mas claro y mas específico, pero en un conjunto de checklist |
