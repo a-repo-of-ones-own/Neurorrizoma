@@ -43,4 +43,4 @@
 | images - 2024-01-12T211434.258.jpeg | NO |
 | images - 2024-10-18T184944.471.jpeg | PUEDO |
 | images - 2025-01-17T121920.380.jpeg | MAS |
-| images - 2025-04-05T205213.049 (1).jpeg | Shiny and full of secrets? Gotta know! |
+| images - 2025-04-05T205213.049 (1).jpeg | Este fue mi primer meme después de los diagnósticos |
