@@ -8,22 +8,22 @@
 | Gemini_Generated_Image_ltr7hjltr7hjltr7.png |  Medicalización |
 | Gemini_Generated_Image_n3vcavn3vcavn3vc.png |  La atención médica es complicada, comunicarse con medicos es complicado, lo que creo que es importante lo ignoran, lo que no me parece importante es una catástrofe moral |
 | Gemini_Generated_Image_n53p1in53p1in53p.png |  Ansiedad encubria TDAH, TDAH encubría Autismo |
-| Picture1.png |  |
-| Picture10.png |  |
+| Picture1.png | Los médicos ni me escuchan a mi directamente ni a mi género |
+| Picture10.png | No tuve oportunidad por haber nacido en la epoca en la que nací |
 | Picture2.png |  |
-| Picture3.png |  |
+| Picture3.png | El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo |
 | Picture4.png |  |
-| Picture5.png |  |
-| Picture6.png |  |
+| Picture5.png |   |
+| Picture6.png |   |
 | Picture7.png |  |
-| Picture8.png |  |
+| Picture8.png | |
 | Picture9.png |  |
 | RDT_20230808_1240156748472046140833118.jpg |  |
-| RDT_20230902_1530567223832394279315874.jpg |  |
-| RDT_20230926_0357173691324169834869702.jpg |  |
-| RDT_20230926_1732528670369116409641610.jpg |  |
-| RDT_20231008_1625537703875738345230798.jpg |  |
-| RDT_20231220_2007262425227007685855164.jpg |  |
+| RDT_20230902_1530567223832394279315874.jpg | A veces siento que el TDAH es una condición anticapitalista |
+| RDT_20230926_0357173691324169834869702.jpg | el DSM fue una mega decepción, pensé que era mas claro y mas específico, pero en un conjunto de checklist |
+| RDT_20230926_1732528670369116409641610.jpg | En mi defensa mi cerebro hace lo que quiere |
+| RDT_20231008_1625537703875738345230798.jpg | El presidente de Uruguay era Aparicio Méndez, quien gobernaba de facto durante el periodo de la dictadura cívico-militar (1973-1985) GOTTA KNOW  |
+| RDT_20231220_2007262425227007685855164.jpg | Estoy seriamente dudando de si voy a poder con mi tesis doctoral |
 | RDT_20231229_16082477922639232012432.jpg |  |
 | RDT_20240120_0710163958576075294714469.jpg |  |
 | RDT_20240211_1729508283935535874587332.jpg |  |
