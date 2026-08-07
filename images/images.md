@@ -1,6 +1,6 @@
 | archivo | anotaciones |
 |---|---|
-| Gemini_Generated_Image_38lu9z38lu9z38lu.png |  |
+| Gemini_Generated_Image_38lu9z38lu9z38lu.png | Tomando las diferentes variaciones de metilfenidato como para que no me funcionen (¬`‸ ́¬) |
 | Gemini_Generated_Image_3r6gan3r6gan3r6g.png |  |
 | Gemini_Generated_Image_8mu6fj8mu6fj8mu6.png |  |
 | Gemini_Generated_Image_dvqqkzdvqqkzdvqq.png |  |
