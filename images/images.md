@@ -1,13 +1,13 @@
 | archivo | anotaciones |
 |---|---|
 | Gemini_Generated_Image_38lu9z38lu9z38lu.png | Tomando las diferentes variaciones de metilfenidato como para que no me funcionen (¬`‸ ́¬) |
-| Gemini_Generated_Image_3r6gan3r6gan3r6g.png |  |
-| Gemini_Generated_Image_8mu6fj8mu6fj8mu6.png |  |
-| Gemini_Generated_Image_dvqqkzdvqqkzdvqq.png |  |
-| Gemini_Generated_Image_h3vyzth3vyzth3vy.png |  |
-| Gemini_Generated_Image_ltr7hjltr7hjltr7.png |  |
-| Gemini_Generated_Image_n3vcavn3vcavn3vc.png |  |
-| Gemini_Generated_Image_n53p1in53p1in53p.png |  |
+| Gemini_Generated_Image_3r6gan3r6gan3r6g.png | Me comprometo con demasiadas cosas, quiero hacer demasiadas cosas |
+| Gemini_Generated_Image_8mu6fj8mu6fj8mu6.png |  La expectativa de siempre ser productiva, no tanto sentir alivio|
+| Gemini_Generated_Image_dvqqkzdvqqkzdvqq.png |  El trabajo desde la pandemia se ha vueto mas dificil, siento que los demas se dan cuenta de que algo es diferente en mi y se burlan |
+| Gemini_Generated_Image_h3vyzth3vyzth3vy.png |  Nunca tener un espacio organizado |
+| Gemini_Generated_Image_ltr7hjltr7hjltr7.png |  Medicalización |
+| Gemini_Generated_Image_n3vcavn3vcavn3vc.png |  La atención médica es complicada, comunicarse con medicos es complicado, lo que creo que es importante lo ignoran, lo que no me parece importante es una catástrofe moral |
+| Gemini_Generated_Image_n53p1in53p1in53p.png |  Ansiedad encubria TDAH, TDAH encubría Autismo |
 | Picture1.png |  |
 | Picture10.png |  |
 | Picture2.png |  |
