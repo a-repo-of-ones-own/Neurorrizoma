@@ -1,0 +1,71 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #faf8fc;
+}
+
+
+/* Intro */
+
+header {
+  max-width: 700px;
+  margin: 100px auto;
+  padding: 40px;
+}
+
+
+/* Scrollytelling container */
+
+#scrolly {
+  display: flex;
+  max-width: 1200px;
+  margin: auto;
+}
+
+
+/* Text column */
+
+.scrolly-text {
+  width: 40%;
+  padding: 0 30px;
+}
+
+
+/* Each storytelling moment */
+
+.step {
+  min-height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  opacity: 0.25;
+  transition: opacity 0.4s;
+}
+
+
+.step.is-active {
+  opacity: 1;
+}
+
+
+/* Visualization */
+
+.scrolly-graphic {
+  width: 60%;
+  height: 100vh;
+
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#visualization {
+  width: 100%;
+  height: 90vh;
+}
