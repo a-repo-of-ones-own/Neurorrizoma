@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Scrollytelling Project</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>My Digital Story</h1>
+  <p>Scroll to explore the visualization.</p>
+</header>
+
+
+<section id="scrolly">
+
+  <!-- TEXT -->
+  <div class="scrolly-text">
+
+    <div class="step" data-step="0">
+      <h2>Introduction</h2>
+      <p>
+        At first, the corpus appears as a collection
+        of disconnected documents.
+      </p>
+    </div>
+
+    <div class="step" data-step="1">
+      <h2>Connections emerge</h2>
+      <p>
+        When we examine their themes, connections
+        begin to emerge between documents.
+      </p>
+    </div>
+
+    <div class="step" data-step="2">
+      <h2>A cluster appears</h2>
+      <p>
+        These documents form a particularly
+        important thematic cluster.
+      </p>
+    </div>
+
+    <div class="step" data-step="3">
+      <h2>The rhizome</h2>
+      <p>
+        Rather than forming a hierarchy, the
+        relationships begin to resemble a rhizome.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- VISUALIZATION -->
+  <div class="scrolly-graphic">
+
+    <svg id="visualization"></svg>
+
+  </div>
+
+</section>
+
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script src="https://unpkg.com/scrollama"></script>
+
+<script src="graph.js"></script>
+<script src="scrolly.js"></script>
+
+</body>
+</html>
