@@ -107,17 +107,34 @@ d3.csv("nodes.csv").then(nodes => {
      IMAGE
   ========================= */
 
+const defs = svg.append("defs");
+
+defs
+  .selectAll("clipPath")
+  .data(nodes)
+  .join("clipPath")
+  .attr("id", d => `clip-${d.id}`)
+  .append("circle")
+  .attr("r", 50)
+  .attr("cx", 0)
+  .attr("cy", 0);
+   
   nodeSelection
-    .append("image")
-    .attr("href", d => d.image)
-    .attr("x", -45)
-    .attr("y", -45)
-    .attr("width", 90)
-    .attr("height", 90)
-    .attr(
-      "preserveAspectRatio",
-      "xMidYMid slice"
-    );
+  .append("image")
+  .attr("href", d => d.image)
+  .attr("x", -50)
+  .attr("y", -50)
+  .attr("width", 100)
+  .attr("height", 100)
+  .attr("clip-path", d => `url(#clip-${d.id})`)
+  .attr("preserveAspectRatio", "xMidYMid slice");
+
+   nodeSelection
+  .append("circle")
+  .attr("r", 50)
+  .attr("fill", "none")
+  .attr("stroke", "white")
+  .attr("stroke-width", 3);
 
 
 
