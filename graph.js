@@ -76,37 +76,17 @@ d3.csv("nodes.csv").then(nodes => {
 
 
 
-  /* =========================
-     CREATE NODES
-  ========================= */
-
-  nodeSelection = svg
-    .append("g")
-    .attr("class", "nodes")
-    .selectAll("g")
-    .data(nodes)
-    .join("g")
-    .attr("class", "node");
+ /* CREATE NODES */
+nodeSelection = svg
+  .append("g")
+  .attr("class", "nodes")
+  .selectAll("g")
+  .data(nodes)
+  .join("g")
+  .attr("class", "node");
 
 
-
-  /* =========================
-     PURPLE CIRCLE
-     
-     Keep this temporarily.
-  ========================= */
-
-  nodeSelection
-    .append("circle")
-    .attr("r", 55)
-    .attr("fill", "purple");
-
-
-
-  /* =========================
-     IMAGE
-  ========================= */
-
+/* DEFINITIONS FOR CIRCULAR CROPPING */
 const defs = svg.append("defs");
 
 defs
@@ -118,8 +98,17 @@ defs
   .attr("r", 50)
   .attr("cx", 0)
   .attr("cy", 0);
-   
-  nodeSelection
+
+
+/* PURPLE BACKGROUND CIRCLE */
+nodeSelection
+  .append("circle")
+  .attr("r", 55)
+  .attr("fill", "purple");
+
+
+/* IMAGE CROPPED TO CIRCLE */
+nodeSelection
   .append("image")
   .attr("href", d => d.image)
   .attr("x", -50)
@@ -129,7 +118,9 @@ defs
   .attr("clip-path", d => `url(#clip-${d.id})`)
   .attr("preserveAspectRatio", "xMidYMid slice");
 
-   nodeSelection
+
+/* OPTIONAL BORDER */
+nodeSelection
   .append("circle")
   .attr("r", 50)
   .attr("fill", "none")
@@ -137,17 +128,13 @@ defs
   .attr("stroke-width", 3);
 
 
-
-  /* =========================
-     LABEL
-  ========================= */
-
-  nodeSelection
-    .append("text")
-    .text(d => d.label)
-    .attr("text-anchor", "middle")
-    .attr("y", 75)
-    .attr("font-size", 14);
+/* LABEL */
+nodeSelection
+  .append("text")
+  .text(d => d.label)
+  .attr("text-anchor", "middle")
+  .attr("y", 75)
+  .attr("font-size", 14);
 
 
 
