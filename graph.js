@@ -5,92 +5,245 @@ const height = 700;
 
 svg.attr("viewBox", `0 0 ${width} ${height}`);
 
+let nodeSelection;
+let linkSelection;
+
+
+/* =========================
+   LOAD DATA
+========================= */
 
 d3.csv("nodes.csv").then(nodes => {
 
-  console.log("NODES LOADED:", nodes);
+  console.log("Loaded nodes:", nodes);
 
 
-  // Simple test positions
-  const positions = [
-    { x: 200, y: 250 },
-    { x: 500, y: 250 },
-    { x: 350, y: 450 }
-  ];
+  /* =========================
+     CREATE LINKS
+     
+     For now:
+     node 1 → node 2
+     node 2 → node 3
+     node 3 → node 4
+     etc.
+     
+     and last → first
+  ========================= */
+
+  const links = [];
+
+  for (let i = 0; i < nodes.length - 1; i++) {
+
+    links.push({
+      source: nodes[i].id,
+      target: nodes[i + 1].id
+    });
+
+  }
 
 
-  nodes.forEach((d, i) => {
+  if (nodes.length > 2) {
 
-    d.x = positions[i]?.x || 350;
-    d.y = positions[i]?.y || 350;
+    links.push({
+      source: nodes[nodes.length - 1].id,
+      target: nodes[0].id
+    });
 
-  });
+  }
 
 
-  // create nodes
-  const node = svg
-    .selectAll(".node")
+  console.log("Links:", links);
+
+
+
+  /* =========================
+     CREATE LINKS FIRST
+     
+     This is important so they
+     stay BEHIND the nodes.
+  ========================= */
+
+  linkSelection = svg
+    .append("g")
+    .attr("class", "links")
+    .selectAll("line")
+    .data(links)
+    .join("line")
+    .attr("class", "link")
+    .attr("stroke", "#777")
+    .attr("stroke-width", 3)
+    .style("opacity", 0.5);
+
+
+
+  /* =========================
+     CREATE NODES
+  ========================= */
+
+  nodeSelection = svg
+    .append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
     .data(nodes)
     .join("g")
-    .attr("class", "node")
+    .attr("class", "node");
+
+
+
+  /* =========================
+     PURPLE CIRCLE
+     
+     Keep this temporarily.
+  ========================= */
+
+  nodeSelection
+    .append("circle")
+    .attr("r", 55)
+    .attr("fill", "purple");
+
+
+
+  /* =========================
+     IMAGE
+  ========================= */
+
+  nodeSelection
+    .append("image")
+    .attr("href", d => d.image)
+    .attr("x", -45)
+    .attr("y", -45)
+    .attr("width", 90)
+    .attr("height", 90)
     .attr(
+      "preserveAspectRatio",
+      "xMidYMid slice"
+    );
+
+
+
+  /* =========================
+     LABEL
+  ========================= */
+
+  nodeSelection
+    .append("text")
+    .text(d => d.label)
+    .attr("text-anchor", "middle")
+    .attr("y", 75)
+    .attr("font-size", 14);
+
+
+
+  /* =========================
+     TOOLTIP
+  ========================= */
+
+  nodeSelection
+    .append("title")
+    .text(d => d.description);
+
+
+
+  /* =========================
+     FORCE SIMULATION
+  ========================= */
+
+  const simulation = d3
+    .forceSimulation(nodes)
+
+    .force(
+      "link",
+      d3
+        .forceLink(links)
+        .id(d => d.id)
+        .distance(180)
+    )
+
+    .force(
+      "charge",
+      d3
+        .forceManyBody()
+        .strength(-500)
+    )
+
+    .force(
+      "center",
+      d3.forceCenter(
+        width / 2,
+        height / 2
+      )
+    )
+
+    .force(
+      "collision",
+      d3.forceCollide(75)
+    );
+
+
+
+  /* =========================
+     MOVE EVERYTHING
+  ========================= */
+
+  simulation.on("tick", () => {
+
+    linkSelection
+
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+
+    nodeSelection.attr(
       "transform",
       d => `translate(${d.x},${d.y})`
     );
 
-
-  // add circles so we KNOW something is visible
-  node
-    .append("circle")
-    .attr("r", 60)
-    .attr("fill", "purple");
+  });
 
 
-  // add images
-  node
-    .append("image")
-    .attr("href", d => d.image)
-    .attr("x", -50)
-    .attr("y", -50)
-    .attr("width", 100)
-    .attr("height", 100);
 
-
-  // add labels
-  node
-    .append("text")
-    .attr("text-anchor", "middle")
-    .attr("y", 80)
-    .text(d => d.label);
-
-
-  // functions used by Scrollama
+  /* =========================
+     SCROLLYTELLING FUNCTIONS
+  ========================= */
 
   window.showEverything = function () {
 
-    node
+    nodeSelection
       .transition()
-      .duration(500)
+      .duration(700)
       .style("opacity", 1);
+
+    linkSelection
+      .transition()
+      .duration(700)
+      .style("opacity", 0.3);
 
   };
 
 
   window.showConnections = function () {
 
-    node
+    nodeSelection
       .transition()
-      .duration(500)
-      .style("opacity", 0.6);
+      .duration(700)
+      .style("opacity", 1);
+
+    linkSelection
+      .transition()
+      .duration(700)
+      .style("opacity", 0.9);
 
   };
 
 
   window.highlightCluster = function () {
 
-    node
+    nodeSelection
       .transition()
-      .duration(500)
+      .duration(700)
       .style(
         "opacity",
         d =>
@@ -99,21 +252,37 @@ d3.csv("nodes.csv").then(nodes => {
             : 0.1
       );
 
+    linkSelection
+      .transition()
+      .duration(700)
+      .style("opacity", 0.1);
+
   };
 
 
   window.showRhizome = function () {
 
-    node
+    nodeSelection
       .transition()
-      .duration(500)
+      .duration(700)
       .style("opacity", 1);
 
+    linkSelection
+      .transition()
+      .duration(700)
+      .style("opacity", 0.6);
+
   };
+
+
+  showEverything();
 
 })
 .catch(error => {
 
-  console.error("CSV ERROR:", error);
+  console.error(
+    "Could not load nodes.csv:",
+    error
+  );
 
 });
