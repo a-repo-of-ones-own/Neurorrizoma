@@ -1,0 +1,4 @@
+id,label,group,image,description
+n1,Autism,neurodivergence,images/autism.jpg,A node representing autism-related material.
+n2,ADHD,neurodivergence,images/adhd.jpg,A node representing ADHD-related material.
+n3,Masking,experience,images/masking.jpg,Material related to masking and social adaptation.
