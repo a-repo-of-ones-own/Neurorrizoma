@@ -1,5 +1,45 @@
-id,label,group,image,description
-n1,Autism,neurodivergence,images/Picture1.png,A node representing autism-related material.
-n2,ADHD,neurodivergence,images/Picture2.png,A node representing ADHD-related material.
-n3,Masking,experience,images/Picture3.png,Material related to masking and social adaptation.
-n4,other,experience,images/Picture4.png,test2
+id,label,group,images,description
+n1,label,medicina,images/Gemini_Generated_Image_38lu9z38lu9z38lu.png,Tomando las diferentes variaciones de metilfenidato como para que no me funcionen (¬`‸ ́¬)
+n2,label,experiencia,images/Gemini_Generated_Image_3r6gan3r6gan3r6g.png,"Me comprometo con demasiadas cosas, quiero hacer demasiadas cosas"
+n3,label,capitalismo,images/Gemini_Generated_Image_8mu6fj8mu6fj8mu6.png,"La expectativa de siempre ser productiva, no tanto sentir alivio"
+n4,label,capitalismo,images/Gemini_Generated_Image_dvqqkzdvqqkzdvqq.png,"El trabajo desde la pandemia se ha vueto mas dificil, siento que los demas se dan cuenta de que algo es diferente en mi y se burlan"
+n5,label,experiencia,images/Gemini_Generated_Image_h3vyzth3vyzth3vy.png,Nunca tener un espacio organizado
+n6,label,medicina,images/Gemini_Generated_Image_ltr7hjltr7hjltr7.png,Medicalización
+n7,label,medicina,images/Gemini_Generated_Image_n3vcavn3vcavn3vc.png,"La atención médica es complicada, comunicarse con medicos es complicado, lo que creo que es importante lo ignoran, lo que no me parece importante es una catástrofe moral"
+n8,label,experiencia,images/Gemini_Generated_Image_n53p1in53p1in53p.png,"Ansiedad encubria TDAH, TDAH encubría Autismo"
+n9,label,medicina,images/Picture1.png,Los médicos ni me escuchan a mi directamente ni a mi género
+n10,label,medicina,images/Picture10.png,No tuve oportunidad por haber nacido en la década en la que nací
+n11,label,medicina,images/Picture2.png,Ain't Nobody Got Time for That
+n12,label,medicina,images/Picture3.png,or this
+n13,label,medicina,images/Picture4.png,and this
+n14,label,medicina,images/Picture5.png,hell no
+n15,label,medicina,images/Picture6.png,hate doctors
+n16,label,medicina,images/Picture7.png,Extraño aprender francés
+n17,label,medicina,images/Picture8.png,Si las gotas de lluvia fueran de Serlatina...
+n18,label,medicina,images/Picture9.png,...me encantaría estar ahi
+n19,label,meme,images/RDT_20230808_1240156748472046140833118.jpg,"El medicamento solo funcionó un mes, luego solo funciona la mitad del tiempo"
+n20,label,meme,images/RDT_20230902_1530567223832394279315874.jpg,A veces siento que el TDAH es una condición anticapitalista
+n21,label,experiencia,images/RDT_20230926_0357173691324169834869702.jpg,"el DSM fue una mega decepción, pensé que era mas claro y mas específico, pero en un conjunto de checklist"
+n22,label,experiencia,images/RDT_20230926_1732528670369116409641610.jpg,En mi defensa mi cerebro hace lo que quiere
+n23,label,experiencia,images/RDT_20231008_1625537703875738345230798.jpg,"El presidente de Uruguay era Aparicio Méndez, quien gobernaba de facto durante el periodo de la dictadura cívico-militar (1973-1985) GOTTA KNOW"
+n24,label,experiencia,images/RDT_20231220_2007262425227007685855164.jpg,Estoy seriamente dudando de si voy a poder con mi tesis doctoral
+n25,label,experiencia,images/RDT_20231229_16082477922639232012432.jpg,"Fui feliz encerrada en la pandemia, pero no podia creer lo fácil que la gente no le importaban los demás..."
+n26,label,meme,images/RDT_20240120_0710163958576075294714469.jpg,Sleep is for the weak
+n27,label,meme,images/RDT_20240211_1729508283935535874587332.jpg,"Estos diagnósticos explican tanto de mi niñez, lloro por todo hasta de adulta"
+n28,label,experiencia,images/RDT_20240324_1854458389048022320374850.jpg,"Investigar para la tesis ◉‿◉, ponerlo por escrito formalmente x_x"
+n29,label,experiencia,images/RDT_20240329_0024531652374641903798217.jpg,Bueno no me había dado cuenta de que si tengo una rutina
+n30,label,experiencia,images/RDT_20240405_2147584360606277228461996.jpg,Espero reencarnar en un gato clasemedieron
+n31,label,meme,images/RDT_20240826_0655051385278235034746783.jpg,This is why I don't talk to my parents
+n32,label,meme,images/RDT_20240830_200833290892850831367932.jpg,"Me encanta aprender del movimiento anti-psiquiatría, pero estos diagnosticos y la sertralina me han hecho reevaluar toda mi vida"
+n33,label,meme,images/RDT_20241217_2149307273412911064936827.jpg,bleh
+n34,label,experiencia,images/RDT_20241223_1310307249065315647514315.jpg,"ESTOOO, siempre me han malinterpretado es muy cansado"
+n35,label,experiencia,images/RDT_20250110_1901246081310344327713024.jpg,"Todo desde el punto de vista capitalista y desde lo que hace la vida complicada a los médicos, maestros y padres"
+n36,label,experiencia,images/RDT_20250411_1402556579957226709287136.jpg,"""Tania eS Un AluMnA eXceLenTE, pinche vieja solo por que te hago la vida fácil tengo un transtorno de ansiedad que nadie se ha dado cuenta solo por que soy ""buena alumna"""
+n37,label,experiencia,images/RDT_20250415_1234183109079423680852404.jpg,"Ahora entiendo a mis compañeritos ""rebeldes"" si pudiera regrear el tiempo seria tan caótica y feliz"
+n38,label,experiencia,images/RDT_20250507_2238488986678831529453492.jpg,"Luego siento que el español tampoco es tan lengua nativa para mi, ni el español ni el inglés, luego cada uno tiene sus propias afecciones muy particulares"
+n39,label,meme,images/RDT_20250920_0351434926078639142753092.jpg,Pero conexiones que a nadie le parece interesntes mas que a mi...
+n40,label,experiencia,images/images - 2023-11-16T150720.226.jpeg,YA
+n41,label,experiencia,images/images - 2024-01-12T211434.258.jpeg,NO
+n42,label,experiencia,images/images - 2024-10-18T184944.471.jpeg,PUEDO
+n43,label,experiencia,images/images - 2025-01-17T121920.380.jpeg,MAS
+n44,label,meme,images/images - 2025-04-05T205213.049 (1).jpeg,Este fue mi primer meme después de los diagnósticos
