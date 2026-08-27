@@ -1,78 +1,926 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>My Scrollytelling Project</title>
+  <title>No hay una ruta correcta | Neurorrizoma</title>
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg: #faf8fc;
+      --paper: rgba(255, 255, 255, 0.88);
+      --ink: #2f2935;
+      --muted: #746b7d;
+      --purple: #7c5aa6;
+      --purple-dark: #513b72;
+      --purple-soft: #eee7f6;
+      --line: #a99db7;
+      --border: #ddd4e8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, #f1ebf7 0, transparent 24rem),
+        var(--bg);
+    }
+
+    header {
+      max-width: 850px;
+      min-height: 75vh;
+      margin: 0 auto;
+      padding: 12vh 32px 8vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(3rem, 8vw, 6.8rem);
+      line-height: 0.95;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+
+    header .deck {
+      max-width: 690px;
+      margin: 28px 0 0;
+      font-size: clamp(1.15rem, 2vw, 1.42rem);
+      line-height: 1.65;
+      color: #514959;
+    }
+
+    .scroll-cue {
+      margin-top: 40px;
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    #scrolly {
+      width: min(1400px, 100%);
+      margin: 0 auto;
+      padding: 0 24px 8vh;
+      display: grid;
+      grid-template-columns: minmax(300px, 0.78fr) minmax(500px, 1.22fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    .scrolly-text {
+      min-width: 0;
+    }
+
+    .step {
+      min-height: 86vh;
+      padding: 18vh 4px;
+      display: flex;
+      align-items: center;
+      opacity: 0.25;
+      transition: opacity 320ms ease;
+    }
+
+    .step.is-active {
+      opacity: 1;
+    }
+
+    .step-card {
+      width: 100%;
+      max-width: 510px;
+      padding: 28px;
+      border-left: 3px solid transparent;
+      border-radius: 4px 18px 18px 4px;
+      background: rgba(250, 248, 252, 0.82);
+      backdrop-filter: blur(5px);
+      transition:
+        background 320ms ease,
+        border-color 320ms ease,
+        transform 320ms ease;
+    }
+
+    .step.is-active .step-card {
+      background: var(--paper);
+      border-left-color: var(--purple);
+      transform: translateX(6px);
+    }
+
+    .moment {
+      display: inline-block;
+      margin-bottom: 12px;
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    .step h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+      line-height: 1.08;
+      font-weight: 500;
+    }
+
+    .step p {
+      margin: 0;
+      font-size: 1.06rem;
+      line-height: 1.7;
+      color: #4d4654;
+    }
+
+    .step p + p {
+      margin-top: 14px;
+    }
+
+    .scrolly-graphic {
+      position: sticky;
+      top: 0;
+      min-width: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .graphic-shell {
+      width: 100%;
+      padding: 18px 18px 12px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 16px 50px rgba(69, 46, 89, 0.08);
+    }
+
+    .graphic-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 4px 8px 10px;
+      font-family: Arial, sans-serif;
+    }
+
+    #graphic-kicker {
+      margin: 0 0 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    #graphic-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--purple-dark);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px 12px;
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.65;
+    }
+
+    #visualization {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 74vh;
+      overflow: visible;
+    }
+
+    .link {
+      stroke: var(--line);
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+
+    .node {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .node .halo {
+      fill: white;
+      stroke: #d4c6e0;
+      stroke-width: 2;
+    }
+
+    .node.is-selected .halo {
+      stroke: var(--purple-dark);
+      stroke-width: 4;
+    }
+
+    .node image {
+      transition: filter 250ms ease;
+    }
+
+    .node text {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      fill: #504859;
+      paint-order: stroke;
+      stroke: rgba(250,248,252,.95);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    #node-detail {
+      min-height: 68px;
+      margin: 4px 8px 6px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--purple-soft);
+      font-family: Arial, sans-serif;
+      color: #453755;
+    }
+
+    #node-detail strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--purple-dark);
+    }
+
+    #node-detail span {
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .closing {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 12vh 32px 18vh;
+    }
+
+    .closing h2 {
+      margin: 0 0 20px;
+      font-size: clamp(2.1rem, 5vw, 4.5rem);
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    .closing p {
+      max-width: 680px;
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #514959;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .node:hover .halo {
+        stroke: var(--purple);
+        stroke-width: 4;
+      }
+    }
+
+    @media (max-width: 900px) {
+      #scrolly {
+        display: block;
+        padding: 0;
+      }
+
+      .scrolly-graphic {
+        z-index: 1;
+        min-height: auto;
+        top: 0;
+        padding: 10px;
+        background: linear-gradient(
+          to bottom,
+          rgba(250,248,252,.98) 82%,
+          rgba(250,248,252,.1)
+        );
+      }
+
+      .graphic-shell {
+        max-width: 760px;
+        margin: 0 auto;
+        border-radius: 18px;
+      }
+
+      #visualization {
+        max-height: 54vh;
+      }
+
+      .scrolly-text {
+        position: relative;
+        z-index: 2;
+        padding: 0 18px;
+      }
+
+      .step {
+        min-height: 72vh;
+        padding: 30vh 0 10vh;
+        align-items: flex-end;
+      }
+
+      .step-card {
+        max-width: 620px;
+        margin: 0 auto;
+        box-shadow: 0 8px 28px rgba(69,46,89,.1);
+      }
+
+      .legend {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      header {
+        min-height: 70vh;
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .graphic-shell {
+        padding: 10px 8px 8px;
+      }
+
+      .graphic-header {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      #visualization {
+        max-height: 46vh;
+      }
+
+      #node-detail {
+        min-height: 62px;
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+
+      .step-card {
+        padding: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>My Digital Story</h1>
-  <p>Scroll to explore the visualization.</p>
-</header>
+  <header>
+    <p class="eyebrow">Neurorrizoma · ensayo visual</p>
+    <h1>No hay una ruta correcta.</h1>
+    <p class="deck">
+      Un archivo de memes, imágenes, diagnósticos, recuerdos y contradicciones
+      se convierte poco a poco en una cartografía de la experiencia neurodivergente.
+    </p>
+    <p class="scroll-cue">↓ Desplázate para recorrer siete momentos</p>
+  </header>
 
+  <main>
+    <section id="scrolly">
 
-<section id="scrolly">
+      <div class="scrolly-text">
 
-  <!-- TEXT -->
-  <div class="scrolly-text">
+        <article class="step is-active" data-step="0">
+          <div class="step-card">
+            <span class="moment">Momento 1 · Introducción</span>
+            <h2>No hay una ruta correcta</h2>
+            <p>
+              Al principio, el archivo parece una acumulación de fragmentos:
+              memes, capturas, recuerdos, comentarios sobre medicina, escuela,
+              trabajo y vida cotidiana.
+            </p>
+            <p>
+              El desorden no es un error previo al análisis. Es el punto de partida.
+            </p>
+          </div>
+        </article>
 
-    <div class="step" data-step="0">
-      <h2>Introduction</h2>
+        <article class="step" data-step="1">
+          <div class="step-card">
+            <span class="moment">Momento 2 · Clasificación</span>
+            <h2>Del diagnóstico al checklist</h2>
+            <p>
+              El lenguaje clínico ofrece nombres y categorías, pero también puede
+              reducir una experiencia compleja a una lista de rasgos observables.
+            </p>
+            <p>
+              ¿Qué queda fuera cuando la experiencia solo se vuelve legible a través
+              de una casilla?
+            </p>
+          </div>
+        </article>
+
+        <article class="step" data-step="2">
+          <div class="step-card">
+            <span class="moment">Momento 3 · Memoria</span>
+            <h2>Archivar para releerse</h2>
+            <p>
+              El diagnóstico no cambia el pasado, pero sí puede cambiar su lectura.
+              La infancia, la escuela y comportamientos antes considerados aislados
+              comienzan a adquirir otras relaciones.
+            </p>
+            <p>
+              El archivo funciona entonces como una hermenéutica retrospectiva.
+            </p>
+          </div>
+        </article>
+
+        <article class="step" data-step="3">
+          <div class="step-card">
+            <span class="moment">Momento 4 · Género y legibilidad</span>
+            <h2>La buena alumna y el sujeto invisible</h2>
+            <p>
+              Cumplir con las expectativas puede volver menos visibles la ansiedad,
+              el cansancio y las estrategias necesarias para parecer una persona
+              “funcional”.
+            </p>
+            <p>
+              Ser fácil de enseñar, atender o evaluar no significa no necesitar apoyo.
+            </p>
+          </div>
+        </article>
+
+        <article class="step" data-step="4">
+          <div class="step-card">
+            <span class="moment">Momento 5 · Productividad</span>
+            <h2>Un cerebro improductivo para un mundo productivo</h2>
+            <p>
+              El tiempo, la atención y la organización se convierten en problemas
+              cuando se miden contra un ideal continuo de eficiencia.
+            </p>
+            <p>
+              La pregunta cambia: no solo qué falla en el individuo, sino qué tipo
+              de mente presupone un sistema que define una única manera correcta de producir.
+            </p>
+          </div>
+        </article>
+
+        <article class="step" data-step="5">
+          <div class="step-card">
+            <span class="moment">Momento 6 · Autoteoría</span>
+            <h2>Memes que piensan</h2>
+            <p>
+              El meme no es una pausa cómica entre objetos serios. Puede condensar
+              reconocimiento, afecto, humor y crítica en una forma mínima.
+            </p>
+            <p>
+              Al incorporarlo al archivo, la cultura digital se convierte también
+              en una forma de producir conocimiento sobre una misma.
+            </p>
+          </div>
+        </article>
+
+        <article class="step" data-step="6">
+          <div class="step-card">
+            <span class="moment">Momento 7 · Neurorrizoma</span>
+            <h2>El desorden como argumento</h2>
+            <p>
+              Las conexiones finales no forman una jerarquía ni conducen a una
+              explicación única. Medicina, memoria, género, productividad, lenguaje
+              y humor permanecen atravesándose.
+            </p>
+            <p>
+              Lo que desde una lógica clasificatoria parece dispersión puede,
+              desde una lógica rizomática, convertirse en conexión.
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="scrolly-graphic">
+        <div class="graphic-shell">
+          <div class="graphic-header">
+            <div>
+              <p id="graphic-kicker">Momento 1 de 7</p>
+              <p id="graphic-title">Archivo fragmentario</p>
+            </div>
+
+            <div class="legend" aria-label="Grupos del archivo">
+              <span>medicina</span>
+              <span>experiencia</span>
+              <span>capitalismo</span>
+              <span>meme</span>
+            </div>
+          </div>
+
+          <svg
+            id="visualization"
+            viewBox="0 0 820 720"
+            role="img"
+            aria-label="Grafo interactivo del archivo Neurorrizoma">
+          </svg>
+
+          <div id="node-detail" aria-live="polite">
+            <strong>Explora un nodo</strong>
+            <span>Selecciona una imagen para leer la anotación asociada.</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="closing">
+      <p class="eyebrow">Cierre</p>
+      <h2>El archivo no documenta solamente una experiencia. La reorganiza.</h2>
       <p>
-        At first, the corpus appears as a collection
-        of disconnected documents.
+        Neurorrizoma propone que comprender una vida neurodivergente no requiere
+        necesariamente ordenar sus fragmentos en una secuencia lineal. También
+        puede significar conservar sus saltos, permitir conexiones inesperadas
+        y observar qué conocimiento aparece entre ellas.
       </p>
-    </div>
+    </section>
+  </main>
 
-    <div class="step" data-step="1">
-      <h2>Connections emerge</h2>
-      <p>
-        When we examine their themes, connections
-        begin to emerge between documents.
-      </p>
-    </div>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 
-    <div class="step" data-step="2">
-      <h2>A cluster appears</h2>
-      <p>
-        These documents form a particularly
-        important thematic cluster.
-      </p>
-    </div>
+  <script>
+    const svg = d3.select("#visualization");
+    const width = 820;
+    const height = 720;
 
-    <div class="step" data-step="3">
-      <h2>The rhizome</h2>
-      <p>
-        Rather than forming a hierarchy, the
-        relationships begin to resemble a rhizome.
-      </p>
-    </div>
+    const graphicKicker = document.getElementById("graphic-kicker");
+    const graphicTitle = document.getElementById("graphic-title");
+    const detail = document.getElementById("node-detail");
 
-  </div>
+    const momentTitles = [
+      "Archivo fragmentario",
+      "Diagnóstico y clasificación",
+      "Relectura del pasado",
+      "Género, escuela y legibilidad",
+      "Productividad y tiempo",
+      "El meme como conocimiento",
+      "Neurorrizoma"
+    ];
 
+    /*
+      Los conjuntos se basan en los IDs que ya existen en nodes.csv.
+      Puedes cambiarlos después sin modificar el CSV.
+    */
+    const momentNodes = [
+      null,
+      new Set(["n1","n6","n7","n9","n10","n11","n12","n13","n14","n15","n19","n21","n32"]),
+      new Set(["n8","n10","n27","n29","n32","n36","n37","n44"]),
+      new Set(["n7","n8","n9","n10","n34","n36","n37"]),
+      new Set(["n2","n3","n4","n20","n24","n26","n28","n35"]),
+      new Set(["n19","n20","n26","n27","n31","n32","n33","n39","n44"]),
+      null
+    ];
 
-  <!-- VISUALIZATION -->
-  <div class="scrolly-graphic">
+    const extraLinks = [
+      ["n21","n6"], ["n21","n7"], ["n21","n9"],
+      ["n27","n10"], ["n27","n36"], ["n27","n37"], ["n32","n27"],
+      ["n36","n9"], ["n36","n34"], ["n37","n10"],
+      ["n2","n3"], ["n2","n28"], ["n3","n20"], ["n3","n35"], ["n4","n35"],
+      ["n20","n39"], ["n27","n44"], ["n32","n44"], ["n39","n22"],
+      ["n8","n32"], ["n34","n38"], ["n22","n39"], ["n24","n28"],
+      ["n7","n34"], ["n20","n35"], ["n9","n36"]
+    ];
 
-    <svg id="visualization"></svg>
+    let nodes = [];
+    let links = [];
+    let nodeSelection;
+    let linkSelection;
+    let simulation;
+    let currentStep = 0;
+    let selectedNode = null;
 
-  </div>
+    function imageRadius(d) {
+      const activeSet = momentNodes[currentStep];
+      const isActive = !activeSet || activeSet.has(d.id);
+      return isActive ? 31 : 25;
+    }
 
-</section>
+    function nodeOpacity(d) {
+      if (currentStep === 0 || currentStep === 6) return 0.96;
+      return momentNodes[currentStep].has(d.id) ? 1 : 0.09;
+    }
 
+    function linkOpacity(d) {
+      if (currentStep === 0) return 0;
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
+      const sourceId = typeof d.source === "object" ? d.source.id : d.source;
+      const targetId = typeof d.target === "object" ? d.target.id : d.target;
 
-<script src="https://unpkg.com/scrollama"></script>
+      if (currentStep === 6) return 0.38;
 
-<script src="graph.js"></script>
-<script src="scrolly.js"></script>
+      const activeSet = momentNodes[currentStep];
+      return activeSet.has(sourceId) && activeSet.has(targetId) ? 0.58 : 0.015;
+    }
+
+    function linkWidth(d) {
+      return currentStep === 6 ? 1.6 : 2.2;
+    }
+
+    function updateMoment(step) {
+      currentStep = step;
+
+      graphicKicker.textContent = `Momento ${step + 1} de 7`;
+      graphicTitle.textContent = momentTitles[step];
+
+      document.querySelectorAll(".step").forEach(el => {
+        el.classList.toggle(
+          "is-active",
+          Number(el.dataset.step) === step
+        );
+      });
+
+      if (!nodeSelection || !linkSelection) return;
+
+      nodeSelection
+        .transition()
+        .duration(650)
+        .style("opacity", d => nodeOpacity(d));
+
+      nodeSelection
+        .select(".halo")
+        .transition()
+        .duration(650)
+        .attr("r", d => imageRadius(d) + 4);
+
+      nodeSelection
+        .select("image")
+        .transition()
+        .duration(650)
+        .attr("x", d => -imageRadius(d))
+        .attr("y", d => -imageRadius(d))
+        .attr("width", d => imageRadius(d) * 2)
+        .attr("height", d => imageRadius(d) * 2);
+
+      linkSelection
+        .transition()
+        .duration(650)
+        .style("opacity", d => linkOpacity(d))
+        .attr("stroke-width", d => linkWidth(d));
+
+      if (selectedNode && currentStep > 0 && currentStep < 6) {
+        const activeSet = momentNodes[currentStep];
+        if (!activeSet.has(selectedNode.id)) {
+          selectedNode = null;
+          nodeSelection.classed("is-selected", false);
+          detail.innerHTML =
+            "<strong>Explora un nodo</strong>" +
+            "<span>Selecciona una imagen para leer la anotación asociada.</span>";
+        }
+      }
+    }
+
+    function selectNode(event, d) {
+      selectedNode = d;
+
+      nodeSelection.classed(
+        "is-selected",
+        node => node.id === d.id
+      );
+
+      const group = d.group ? d.group : "archivo";
+      const description = d.description || "Sin descripción.";
+
+      detail.innerHTML = "";
+
+      const strong = document.createElement("strong");
+      strong.textContent = group;
+
+      const span = document.createElement("span");
+      span.textContent = description;
+
+      detail.append(strong, span);
+    }
+
+    d3.csv("nodes.csv")
+      .then(data => {
+        nodes = data;
+
+        /*
+          1. Se crean algunos enlaces suaves dentro de cada grupo.
+          2. Se agregan conexiones temáticas específicas para los siete momentos.
+        */
+        const grouped = d3.group(nodes, d => d.group);
+
+        grouped.forEach(groupNodes => {
+          for (let i = 0; i < groupNodes.length - 1; i++) {
+            links.push({
+              source: groupNodes[i].id,
+              target: groupNodes[i + 1].id,
+              kind: "group"
+            });
+          }
+        });
+
+        extraLinks.forEach(([source, target]) => {
+          const sourceExists = nodes.some(d => d.id === source);
+          const targetExists = nodes.some(d => d.id === target);
+
+          if (sourceExists && targetExists) {
+            links.push({
+              source,
+              target,
+              kind: "thematic"
+            });
+          }
+        });
+
+        const defs = svg.append("defs");
+
+        nodes.forEach(d => {
+          defs
+            .append("clipPath")
+            .attr("id", `clip-${d.id}`)
+            .append("circle")
+            .attr("r", 31);
+        });
+
+        linkSelection = svg
+          .append("g")
+          .attr("aria-hidden", "true")
+          .selectAll("line")
+          .data(links)
+          .join("line")
+          .attr("class", "link")
+          .attr("stroke-dasharray", d => d.kind === "thematic" ? null : "2 5")
+          .style("opacity", 0);
+
+        nodeSelection = svg
+          .append("g")
+          .selectAll("g.node")
+          .data(nodes)
+          .join("g")
+          .attr("class", "node")
+          .attr("tabindex", 0)
+          .attr("role", "button")
+          .attr("aria-label", d =>
+            `${d.group || "archivo"}: ${d.description || d.id}`
+          )
+          .on("click", selectNode)
+          .on("keydown", (event, d) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectNode(event, d);
+            }
+          });
+
+        nodeSelection
+          .append("circle")
+          .attr("class", "halo")
+          .attr("r", 35);
+
+        nodeSelection
+          .append("image")
+          .attr("href", d => d.images)
+          .attr("x", -31)
+          .attr("y", -31)
+          .attr("width", 62)
+          .attr("height", 62)
+          .attr("preserveAspectRatio", "xMidYMid slice")
+          .attr("clip-path", d => `url(#clip-${d.id})`);
+
+        nodeSelection
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("y", 46)
+          .text(d => d.id);
+
+        simulation = d3
+          .forceSimulation(nodes)
+          .force(
+            "link",
+            d3.forceLink(links)
+              .id(d => d.id)
+              .distance(d => d.kind === "thematic" ? 115 : 145)
+              .strength(d => d.kind === "thematic" ? 0.16 : 0.06)
+          )
+          .force(
+            "charge",
+            d3.forceManyBody().strength(-145)
+          )
+          .force(
+            "center",
+            d3.forceCenter(width / 2, height / 2)
+          )
+          .force(
+            "x",
+            d3.forceX(width / 2).strength(0.025)
+          )
+          .force(
+            "y",
+            d3.forceY(height / 2).strength(0.025)
+          )
+          .force(
+            "collision",
+            d3.forceCollide(43)
+          );
+
+        simulation.on("tick", () => {
+          nodeSelection.each(d => {
+            d.x = Math.max(42, Math.min(width - 42, d.x));
+            d.y = Math.max(42, Math.min(height - 42, d.y));
+          });
+
+          linkSelection
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+          nodeSelection.attr(
+            "transform",
+            d => `translate(${d.x},${d.y})`
+          );
+        });
+
+        updateMoment(0);
+      })
+      .catch(error => {
+        console.error("No se pudo cargar nodes.csv:", error);
+
+        detail.innerHTML =
+          "<strong>Error</strong>" +
+          "<span>No se pudo cargar nodes.csv. Verifica que index.html y nodes.csv estén en la misma carpeta.</span>";
+      });
+
+    /*
+      Scrollytelling sin dependencia adicional:
+      IntersectionObserver detecta qué momento atraviesa el centro de la pantalla.
+    */
+    const steps = Array.from(document.querySelectorAll(".step"));
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (!visible.length) return;
+
+        const step = Number(visible[0].target.dataset.step);
+
+        if (step !== currentStep) {
+          updateMoment(step);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "-35% 0px -35% 0px",
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
+      }
+    );
+
+    steps.forEach(step => observer.observe(step));
+
+    window.addEventListener("resize", () => {
+      if (simulation) {
+        simulation.alpha(0.12).restart();
+      }
+    });
+  </script>
 
 </body>
 </html>
